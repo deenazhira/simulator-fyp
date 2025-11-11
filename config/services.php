@@ -13,6 +13,10 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'huggingface' => [
+        'token' => env('HF_API_TOKEN'),
+        'model' => env('HF_MODEL', 'microsoft/DialoGPT-medium'),
+    ],
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
