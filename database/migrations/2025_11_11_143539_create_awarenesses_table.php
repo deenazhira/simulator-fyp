@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('awarenesses', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        $table->id('aware_id');
+        $table->string('aware_title');
+        $table->text('aware_desc');
+        $table->timestamps();
         });
     }
 

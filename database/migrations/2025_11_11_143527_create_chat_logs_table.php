@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chat_logs', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        $table->id('chat_id');
+        $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
+        $table->text('message');
+        $table->text('response')->nullable();
+        $table->timestamp('timestamp')->useCurrent();
         });
     }
 

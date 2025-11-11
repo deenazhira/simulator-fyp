@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dashboards', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        $table->id('dash_id');
+        $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade');
+        $table->foreignId('trainer_id')->nullable()->constrained('trainers', 'trainer_id')->onDelete('set null');
+        $table->foreignId('feedback_id')->nullable()->constrained('feedback', 'feedback_id')->onDelete('set null');
+        $table->string('dash_title');
+        $table->text('dash_desc')->nullable();
+        $table->timestamps();
         });
     }
 
