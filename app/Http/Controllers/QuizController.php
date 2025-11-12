@@ -110,20 +110,39 @@ class QuizController extends Controller
 
     // Show quiz finish page
     public function finish()
-    {
-        $questions = $this->questions;
-        $answers = session('quiz_answers', []);
+{
+    $questions = $this->questions;
+    $answers = session('quiz_answers', []);
 
-        // Calculate score safely
-        $score = 0;
-        foreach ($questions as $index => $question) {
-            if (isset($answers[$index]) && $answers[$index] === $question['correct']) {
-                $score++;
-            }
+    $score = 0;
+    $results = [];
+
+    foreach ($questions as $index => $question) {
+        $userAnswer = $answers[$index] ?? null;
+
+        // Case-insensitive comparison
+        $isCorrect = $userAnswer !== null && strtolower($userAnswer) === strtolower($question['correct']);
+        if ($isCorrect) {
+            $score++;
         }
 
-        $total = count($questions);
-
-        return view('quiz-finish', compact('questions', 'answers', 'score', 'total'));
+        // Save for blade display
+        $results[$index] = [
+            'title' => $question['title'],
+            'correct' => $question['correct'],
+            'explanation' => $question['explanation'],
+            'userAnswer' => $userAnswer,
+            'isCorrect' => $isCorrect,
+        ];
     }
+
+    $total = count($questions);
+
+    return view('quiz-finish', [
+        'results' => $results,
+        'score' => $score,
+        'total' => $total,
+    ]);
+}
+
 }
