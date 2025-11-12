@@ -72,6 +72,7 @@
                 <p class="text-gray-700 mb-6">Identify suspicious URLs and emails in real-time and test your phishing awareness.</p>
                 <a href="{{ route('quiz') }}" class="inline-block bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 transition">Start Quiz</a>
 
+
             </div>
 
             <!-- AI Chatbot -->

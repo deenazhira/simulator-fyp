@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatbotController;
 
 Route::get('/', function () {
@@ -7,8 +8,12 @@ Route::get('/', function () {
 })->name('home');
 
 //quiz
-Route::get('/quiz', [App\Http\Controllers\QuizController::class, 'index'])->name('quiz');
-Route::post('/quiz/answer', [App\Http\Controllers\QuizController::class, 'answer'])->name('phish.quiz.answer');
+// Quiz welcome page
+Route::get('/quiz', [QuizController::class, 'welcome'])->name('quiz');
+// Show question page (after clicking start)
+Route::get('/quiz/start', [QuizController::class, 'showQuestion'])->name('quiz.start');
+// Submit answer
+Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz.answer');
 
 //chatbot
 Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
