@@ -6,32 +6,50 @@ use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
-    // Quiz welcome page
-    public function welcome()
-    {
-        return view('quiz-welcome');
-    }
-
-    // Show the first question (or current question)
-    public function showQuestion()
-    {
-        $question = [
+    private $questions = [
+        [
             'title' => 'Is this email phishing or legitimate?',
-            'image' => 'images/sample-email.png'
-        ];
+            'image' => 'images/email1.png',
+        ],
+        [
+            'title' => 'This social media message link looks suspicious. Phishing or Legit?',
+            'image' => 'images/email2.png',
+        ],
+        // Add all 10 questions here
+    ];
 
-        $total = 5; // total questions
-        $q = 1;     // current question
+    public function showQuestion(Request $request, $q = 1)
+    {
+        $q = (int) $q;
+
+        if ($q > count($this->questions)) {
+            // Quiz finished
+            return view('quiz-finish');
+        }
+
+        $question = $this->questions[$q - 1];
+        $total = count($this->questions);
 
         return view('quiz', compact('question', 'total', 'q'));
     }
 
     public function answer(Request $request)
     {
-        $question_number = $request->input('question_number');
+        $q = $request->input('question_number');
         $answer = $request->input('answer');
 
-        // Store in session or DB as needed
-        return back()->with('message', 'Answer submitted for question ' . $question_number);
+        // Save answer to session
+        $answers = session()->get('quiz_answers', []);
+        $answers[$q] = $answer;
+        session(['quiz_answers' => $answers]);
+
+        // Redirect to next question
+        $next = $q + 1;
+        return redirect()->route('quiz.start', ['q' => $next]);
+    }
+
+    public function welcome()
+    {
+        return view('quiz-welcome'); // Make sure this blade exists
     }
 }

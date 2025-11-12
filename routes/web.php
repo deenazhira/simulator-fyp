@@ -8,11 +8,8 @@ Route::get('/', function () {
 })->name('home');
 
 //quiz
-// Quiz welcome page
 Route::get('/quiz', [QuizController::class, 'welcome'])->name('quiz');
-// Show question page (after clicking start)
-Route::get('/quiz/start', [QuizController::class, 'showQuestion'])->name('quiz.start');
-// Submit answer
+Route::get('/quiz/start/{q?}', [QuizController::class, 'showQuestion'])->name('quiz.start');
 Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz.answer');
 
 //chatbot
