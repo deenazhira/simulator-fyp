@@ -70,7 +70,8 @@
             <div class="p-8 bg-purple-50 rounded-xl shadow hover:shadow-lg transition">
                 <h4 class="font-bold text-xl text-purple-800 mb-3">Simulation Quiz</h4>
                 <p class="text-gray-700 mb-6">Identify suspicious URLs and emails in real-time and test your phishing awareness.</p>
-                <a href="#quiz" class="inline-block bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 transition">Start Quiz</a>
+                <a href="{{ route('quiz') }}" class="inline-block bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 transition">Start Quiz</a>
+
             </div>
 
             <!-- AI Chatbot -->
