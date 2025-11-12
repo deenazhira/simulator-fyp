@@ -16,6 +16,7 @@
             <h1 class="text-2xl font-bold text-purple-700">PhishDefend AI</h1>
             <nav class="space-x-6">
                 <a href="{{ url('/') }}" class="hover:text-purple-700 font-medium">Home</a>
+                <a href="{{ url('/quiz') }}" class="hover:text-purple-700 font-medium">Quiz</a>
                 <a href="{{ url('/chatbot') }}" class="hover:text-purple-700 font-medium">Chatbot</a>
                 <a href="#feedback" class="hover:text-purple-700 font-medium">Feedback</a>
                 <a href="#awareness" class="hover:text-purple-700 font-medium">Awareness</a>
