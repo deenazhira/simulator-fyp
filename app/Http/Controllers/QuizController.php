@@ -6,31 +6,33 @@ use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
-    // 10 placeholder questions
+    // ===============================
+    // QUIZ QUESTIONS
+    // ===============================
     private $questions = [
         [
             'title' => 'Is this email phishing or legitimate?',
             'image' => 'images/email1.png',
             'correct' => 'Phishing',
-            'explanation' => 'This is a classic phishing attempt.'
+            'explanation' => 'This is a classic phishing attempt with a suspicious sender and link.'
         ],
         [
             'title' => 'This social media message link looks suspicious. Phishing or Legit?',
             'image' => 'images/email2.png',
             'correct' => 'Phishing',
-            'explanation' => 'Suspicious links should never be clicked.'
+            'explanation' => 'Shortened or disguised links can lead to phishing pages.'
         ],
         [
             'title' => 'You received a message claiming you won a prize. Is it phishing?',
             'image' => 'images/email3.png',
             'correct' => 'Phishing',
-            'explanation' => 'Unexpected prize messages are usually scams.'
+            'explanation' => 'Unexpected prize emails are common phishing traps.'
         ],
         [
             'title' => 'An email asks for your password to verify your account. Phishing or Legit?',
             'image' => 'images/email4.png',
             'correct' => 'Phishing',
-            'explanation' => 'Legitimate companies never ask for passwords via email.'
+            'explanation' => 'Legitimate services never request passwords via email.'
         ],
         [
             'title' => 'A colleague sends a strange attachment unexpectedly. Safe or Suspicious?',
@@ -42,25 +44,25 @@ class QuizController extends Controller
             'title' => 'A website asks you to login via a link sent in chat. Phishing or Legit?',
             'image' => 'images/email6.png',
             'correct' => 'Phishing',
-            'explanation' => 'Always navigate to websites manually, not via unknown links.'
+            'explanation' => 'Always type URLs manually; chat links can be fake.'
         ],
         [
             'title' => 'You receive an urgent email from “IT support” asking for credentials. Safe?',
             'image' => 'images/email7.png',
             'correct' => 'Phishing',
-            'explanation' => 'IT support will never ask for your credentials by email.'
+            'explanation' => 'IT departments never ask for login details via email.'
         ],
         [
             'title' => 'A notification claims you need to reset your password now. Phishing or Legit?',
             'image' => 'images/email8.png',
             'correct' => 'Phishing',
-            'explanation' => 'Legitimate password resets do not create panic.'
+            'explanation' => 'Urgent tone creates panic — a classic phishing sign.'
         ],
         [
             'title' => 'A random email asks to verify payment details. Safe or Suspicious?',
             'image' => 'images/email9.png',
             'correct' => 'Phishing',
-            'explanation' => 'Never provide sensitive info to unknown emails.'
+            'explanation' => 'Never share payment info through random emails.'
         ],
         [
             'title' => 'You get a message from an unknown sender with a link. Phishing or Legit?',
@@ -70,19 +72,22 @@ class QuizController extends Controller
         ],
     ];
 
-    // Show quiz welcome page
+    // ===============================
+    // QUIZ START PAGE
+    // ===============================
     public function welcome()
     {
         return view('quiz-welcome');
     }
 
-    // Show specific question
+    // ===============================
+    // SHOW ONE QUESTION
+    // ===============================
     public function showQuestion(Request $request, $q = 1)
     {
         $q = (int) $q;
 
         if ($q > count($this->questions)) {
-            // Quiz finished → redirect to finish route
             return redirect()->route('quiz.finish');
         }
 
@@ -92,57 +97,91 @@ class QuizController extends Controller
         return view('quiz', compact('question', 'total', 'q'));
     }
 
-    // Save answer and go to next question
+    // ===============================
+    // SAVE ANSWER
+    // ===============================
     public function answer(Request $request)
     {
         $q = (int)$request->input('question_number');
         $answer = $request->input('answer');
 
-        // Save answer to session (0-indexed)
         $answers = session()->get('quiz_answers', []);
         $answers[$q - 1] = $answer;
         session(['quiz_answers' => $answers]);
 
-        // Redirect to next question
         $next = $q + 1;
         return redirect()->route('quiz.start', ['q' => $next]);
     }
 
-    // Show quiz finish page
+    // ===============================
+    // FINISH PAGE
+    // ===============================
     public function finish()
-{
-    $questions = $this->questions;
-    $answers = session('quiz_answers', []);
+    {
+        $questions = $this->questions;
+        $answers = session('quiz_answers', []);
 
-    $score = 0;
-    $results = [];
+        $score = 0;
+        $results = [];
 
-    foreach ($questions as $index => $question) {
-        $userAnswer = $answers[$index] ?? null;
+        foreach ($questions as $index => $question) {
+            $userAnswer = $answers[$index] ?? null;
 
-        // Case-insensitive comparison
-        $isCorrect = $userAnswer !== null && strtolower($userAnswer) === strtolower($question['correct']);
-        if ($isCorrect) {
-            $score++;
+            $isCorrect = $userAnswer !== null && strtolower($userAnswer) === strtolower($question['correct']);
+            if ($isCorrect) $score++;
+
+            $results[$index] = [
+                'title' => $question['title'],
+                'image' => $question['image'],
+                'correct' => $question['correct'],
+                'explanation' => $question['explanation'],
+                'userAnswer' => $userAnswer,
+                'isCorrect' => $isCorrect,
+            ];
         }
 
-        // Save for blade display
-        $results[$index] = [
-            'title' => $question['title'],
-            'correct' => $question['correct'],
-            'explanation' => $question['explanation'],
-            'userAnswer' => $userAnswer,
-            'isCorrect' => $isCorrect,
-        ];
+        session(['quiz_results' => $results]); // store results for feedback view
+
+        $total = count($questions);
+
+        return view('quiz-finish', [
+            'results' => $results,
+            'score' => $score,
+            'total' => $total,
+        ]);
     }
 
-    $total = count($questions);
+    // ===============================
+    // INDIVIDUAL FEEDBACK PAGE
+    // ===============================
+    public function showResult($id)
+    {
+        $index = (int)$id;
+        $results = session('quiz_results', []);
 
-    return view('quiz-finish', [
-        'results' => $results,
-        'score' => $score,
-        'total' => $total,
-    ]);
-}
+        if (!isset($results[$index])) {
+            abort(404);
+        }
 
+        $question = $results[$index];
+
+        // Optional: image annotations or highlighted zones
+        $annotationsPerQuestion = [
+            0 => [
+                ['x'=>12, 'y'=>14, 'w'=>40, 'h'=>18, 'label'=>'Suspicious sender'],
+                ['x'=>55, 'y'=>60, 'w'=>30, 'h'=>15, 'label'=>'Fake link'],
+            ],
+            1 => [
+                ['x'=>20, 'y'=>35, 'w'=>50, 'h'=>20, 'label'=>'Hidden URL'],
+            ],
+        ];
+
+        $annotations = $annotationsPerQuestion[$index] ?? [];
+
+        return view('quiz-result', [
+            'index' => $index,
+            'question' => $question,
+            'annotations' => $annotations,
+        ]);
+    }
 }

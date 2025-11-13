@@ -18,28 +18,25 @@
 
     <!-- Grid of question cards -->
     <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @foreach($results as $result)
-            @php
-                $borderColor = $result['userAnswer'] === null
-                               ? 'border-gray-400'
-                               : ($result['isCorrect'] ? 'border-green-500' : 'border-red-500');
-            @endphp
+    @foreach($results as $index => $result)
+        @php
+            $borderColor = $result['userAnswer'] === null
+                ? 'border-gray-400'
+                : ($result['isCorrect'] ? 'border-green-500' : 'border-red-500');
+        @endphp
 
-            <div class="bg-white rounded-lg shadow-md p-4 border-4 {{ $borderColor }} cursor-pointer hover:shadow-lg transition">
-                <h3 class="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
-                    {{ $result['title'] }}
-                </h3>
-                @if($result['userAnswer'] !== null)
-                    <p class="text-gray-600 text-xs sm:text-sm">
-                        Your answer: {{ $result['userAnswer'] }} <br>
-                        Correct answer: {{ $result['correct'] }} <br>
-                        Explanation: {{ $result['explanation'] }}
-                    </p>
-                @else
-                    <p class="text-gray-400 text-xs sm:text-sm">Not answered</p>
-                @endif
-            </div>
-        @endforeach
+        <a href="{{ route('quiz.result', ['id' => $index]) }}" class="block hover:scale-105 transition transform">
+    <div class="border rounded-xl p-4 shadow {{ $result['isCorrect'] ? 'border-green-400' : 'border-red-400' }}">
+        <img src="{{ asset($result['image']) }}" class="rounded-lg mb-3">
+        <h3 class="font-semibold text-purple-800">{{ $result['title'] }}</h3>
+        <p class="text-sm text-gray-600">
+            {{ $result['isCorrect'] ? 'Correct' : 'Incorrect' }}
+        </p>
     </div>
+</a>
+
+    @endforeach
+</div>
+
 </div>
 @endsection
