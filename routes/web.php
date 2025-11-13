@@ -12,7 +12,7 @@ Route::get('/quiz', [QuizController::class, 'welcome'])->name('quiz.welcome');
 Route::get('/quiz/start/{q?}', [QuizController::class, 'showQuestion'])->name('quiz.start');
 Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz.answer');
 Route::get('/quiz/finish', [QuizController::class, 'finish'])->name('quiz.finish');
-
+Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('quiz.result');
 
 //chatbot
 Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
