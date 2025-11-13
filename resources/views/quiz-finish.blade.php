@@ -26,7 +26,7 @@
         @endphp
 
         <a href="{{ route('quiz.result', ['id' => $index]) }}" class="block hover:scale-105 transition transform">
-    <div class="border rounded-xl p-4 shadow {{ $result['isCorrect'] ? 'border-green-400' : 'border-red-400' }}">
+    <div class="border-4 rounded-xl p-4 shadow bg-white {{ $result['isCorrect'] ? 'border-green-400' : 'border-red-400' }}">
         <img src="{{ asset($result['image']) }}" class="rounded-lg mb-3">
         <h3 class="font-semibold text-purple-800">{{ $result['title'] }}</h3>
         <p class="text-sm text-gray-600">
