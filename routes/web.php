@@ -21,4 +21,4 @@ Route::post('/chatbot/message', [ChatbotController::class, 'chat'])->name('chatb
 
 
 // routes/web.php or routes/api.php (if API)
-Route::get('/chatbot/test', [\App\Http\Controllers\ChatbotController::class, 'testCall']);
+//Route::get('/chatbot/test', [\App\Http\Controllers\ChatbotController::class, 'testCall']);

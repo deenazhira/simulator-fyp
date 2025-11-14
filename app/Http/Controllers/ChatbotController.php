@@ -10,50 +10,59 @@ class ChatbotController extends Controller
 {
     protected string $apiUrl;
     protected string $token;
+    protected string $model;
 
     public function __construct()
-    {
-        $model = config('services.huggingface.model', env('HUGGINGFACE_MODEL', 'facebook/blenderbot-400M-distill'));
-        // Use the new HF router endpoint
-        $this->apiUrl = "https://router.huggingface.co/hf-inference/models/{$model}";
-        $this->token = config('services.huggingface.token', env('HUGGINGFACE_API_TOKEN', ''));
-    }
-
-    /**
-     * Show the chatbot page.
-     */
-    public function index()
-    {
-        return view('chatbot');
-    }
-
-    /**
-     * Handle incoming user message and call Hugging Face Inference API.
-     */
-    public function chat(Request $request)
 {
-    // Validate user input
+    $this->token = config('services.huggingface.token');
+    $this->model = config('services.huggingface.model');
+
+    // FIX: use text-generation endpoint
+    $this->apiUrl = "https://router.huggingface.co/hf-inference/text-generation/{$this->model}";
+}
+
+public function chat(Request $request)
+{
     $request->validate(['message' => 'required|string|max:2000']);
-    $userMessage = trim($request->input('message'));
+    $userMessage = $request->message;
 
     try {
-        // Send request to Hugging Face router
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('HUGGINGFACE_API_TOKEN'),
-            'Accept' => 'application/json',
-        ])->post('https://router.huggingface.co/hf-inference/text-generation/' . env('HUGGINGFACE_MODEL'), [
-            'inputs' => $userMessage
+            'Authorization' => "Bearer {$this->token}",
+            'Accept'        => 'application/json',
+            'Content-Type'  => 'application/json'
+        ])->post($this->apiUrl, [
+            "inputs" => $userMessage,
+            "parameters" => [
+                "max_new_tokens" => 120,
+                "temperature" => 0.7,
+                "do_sample" => true,
+                "system" =>
+                "You are an attacker pretending to be IT Support. Start friendly, professional, then slowly escalate to asking for credentials."
+            ]
         ]);
 
         $body = $response->json();
 
-        // Get the bot reply safely
-        $reply = $body[0]['generated_text'] ?? $body['generated_text'] ?? '🤖 Sorry, I could not generate a response.';
+        Log::info("HF Response:", $body ?? []);
+
+        // FIX: text-generation models return generated_text directly
+        $reply =
+            $body['generated_text']
+            ?? $body[0]['generated_text']
+            ?? "⚠️ Model returned empty response.";
 
         return response()->json(['reply' => trim($reply)]);
 
     } catch (\Throwable $e) {
-        return response()->json(['reply' => '⚠️ Failed to reach the model. Please try again later.']);
+        Log::error("HF Exception: ".$e->getMessage());
+        return response()->json(['reply' => '⚠️ Communication error with HuggingFace.']);
     }
 }
+
+    public function index()
+{
+    return view('chatbot');
+}
+
 }

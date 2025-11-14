@@ -15,7 +15,8 @@ return [
     */
     'huggingface' => [
     'token' => env('HUGGINGFACE_API_TOKEN'),
-    'model' => env('HUGGINGFACE_MODEL', 'facebook/blenderbot-400M-distill'),],
+    'model' => env('HUGGINGFACE_MODEL'),
+],
 
 
     'postmark' => [

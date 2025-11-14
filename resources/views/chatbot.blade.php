@@ -20,6 +20,31 @@
 </div>
 
 <script>
+   window.addEventListener("DOMContentLoaded", async function() {
+    const chatbox = document.getElementById('chatbox');
+
+    // Show loading
+    chatbox.innerHTML += `<div class="text-gray-500 text-center">Connecting to support...</div>`;
+
+    // Send initial invisible command to chatbot
+    const response = await fetch('{{ route('chatbot.message') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            message: "Start attacker conversation. Greet the user professionally as IT support."
+        })
+    });
+
+    const data = await response.json();
+
+    // Show first attacker message
+    chatbox.innerHTML = `<div class="text-left text-gray-700"><strong>Bot:</strong> ${data.reply}</div>`;
+    chatbox.scrollTop = chatbox.scrollHeight;
+});
+
 document.getElementById('chat-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
