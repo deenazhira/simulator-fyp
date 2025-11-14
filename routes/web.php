@@ -17,3 +17,8 @@ Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('qu
 //chatbot
 Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
 Route::post('/chatbot/message', [ChatbotController::class, 'chat'])->name('chatbot.message');
+
+
+
+// routes/web.php or routes/api.php (if API)
+Route::get('/chatbot/test', [\App\Http\Controllers\ChatbotController::class, 'testCall']);

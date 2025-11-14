@@ -8,18 +8,19 @@ use Illuminate\Support\Facades\Log;
 
 class ChatbotController extends Controller
 {
-    protected $apiUrl;
-    protected $token;
+    protected string $apiUrl;
+    protected string $token;
 
     public function __construct()
     {
-        $model = config('services.huggingface.model');
-        $this->apiUrl = "https://api-inference.huggingface.co/models/{$model}";
-        $this->token = config('services.huggingface.token');
+        $model = config('services.huggingface.model', env('HUGGINGFACE_MODEL', 'facebook/blenderbot-400M-distill'));
+        // Use the new HF router endpoint
+        $this->apiUrl = "https://router.huggingface.co/hf-inference/models/{$model}";
+        $this->token = config('services.huggingface.token', env('HUGGINGFACE_API_TOKEN', ''));
     }
 
     /**
-     * Display the chatbot page.
+     * Show the chatbot page.
      */
     public function index()
     {
@@ -27,71 +28,32 @@ class ChatbotController extends Controller
     }
 
     /**
-     * Handle user message and send to Hugging Face API.
+     * Handle incoming user message and call Hugging Face Inference API.
      */
     public function chat(Request $request)
-    {
-        $request->validate([
-            'message' => 'required|string|max:2000',
+{
+    // Validate user input
+    $request->validate(['message' => 'required|string|max:2000']);
+    $userMessage = trim($request->input('message'));
+
+    try {
+        // Send request to Hugging Face router
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('HUGGINGFACE_API_TOKEN'),
+            'Accept' => 'application/json',
+        ])->post('https://router.huggingface.co/hf-inference/text-generation/' . env('HUGGINGFACE_MODEL'), [
+            'inputs' => $userMessage
         ]);
 
-        $userMessage = $request->input('message');
+        $body = $response->json();
 
-        // Simulate an "attacker" persona for training
-        $systemPrompt = "You are a simulated social engineering attacker for a cybersecurity awareness training. "
-            . "Act like a polite IT support staff trying to convince a user to share credentials, "
-            . "but NEVER provide real malicious links or steps. Keep your responses short, natural, and realistic.";
+        // Get the bot reply safely
+        $reply = $body[0]['generated_text'] ?? $body['generated_text'] ?? '🤖 Sorry, I could not generate a response.';
 
-        $payload = [
-            "inputs" => "{$systemPrompt}\n\nUser: {$userMessage}\nAttacker:",
-            "parameters" => [
-                "max_new_tokens" => 80,
-                "temperature" => 0.9,
-                "top_p" => 0.9
-            ]
-        ];
+        return response()->json(['reply' => trim($reply)]);
 
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$this->token}",
-                'Accept' => 'application/json',
-            ])->post($this->apiUrl, $payload);
-
-            $body = $response->json();
-
-            // Handle errors from Hugging Face
-            if (isset($body['error'])) {
-                Log::error('Hugging Face error: ' . $body['error']);
-                return response()->json(['reply' => "⚠️ Model error. Please try again later."], 500);
-            }
-
-            // Extract generated text from different possible response formats
-            $reply = '';
-            if (is_array($body) && isset($body[0]['generated_text'])) {
-                $reply = $body[0]['generated_text'];
-            } elseif (isset($body['generated_text'])) {
-                $reply = $body['generated_text'];
-            } else {
-                $reply = json_encode($body);
-            }
-
-            // Clean up any repeated context
-            $reply = $this->stripLeadingContext($reply);
-
-            return response()->json(['reply' => $reply]);
-
-        } catch (\Exception $e) {
-            Log::error('Hugging Face request failed: ' . $e->getMessage());
-            return response()->json(['reply' => "🚫 Failed to reach model. Please check your connection."], 500);
-        }
+    } catch (\Throwable $e) {
+        return response()->json(['reply' => '⚠️ Failed to reach the model. Please try again later.']);
     }
-
-    /**
-     * Remove repeated context or prompt echoes from model output.
-     */
-    private function stripLeadingContext(string $text): string
-    {
-        $text = preg_replace("/^.*?Attacker:\s*/is", "", $text, 1);
-        return trim($text);
-    }
+}
 }

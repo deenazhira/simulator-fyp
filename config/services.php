@@ -14,9 +14,9 @@ return [
     |
     */
     'huggingface' => [
-        'token' => env('HF_API_TOKEN'),
-        'model' => env('HF_MODEL', 'microsoft/DialoGPT-medium'),
-    ],
+    'token' => env('HUGGINGFACE_API_TOKEN'),
+    'model' => env('HUGGINGFACE_MODEL', 'facebook/blenderbot-400M-distill'),],
+
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
