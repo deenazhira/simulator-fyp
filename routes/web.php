@@ -7,6 +7,7 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+
 //quiz
 Route::get('/quiz', [QuizController::class, 'welcome'])->name('quiz.welcome');
 Route::get('/quiz/start/{q?}', [QuizController::class, 'showQuestion'])->name('quiz.start');
@@ -17,3 +18,8 @@ Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('qu
 //chatbot
 Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
 Route::post('/chatbot/message', [ChatbotController::class, 'chat'])->name('chatbot.message');
+
+//awareness
+Route::get('/awareness', function () {
+    return view('awareness');
+})->name('awareness');
