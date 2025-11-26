@@ -8,19 +8,20 @@ class ChatbotController extends Controller
 {
     public function index()
     {
-        return view('chatbot'); // show chatbot page
+        return view('chatbot');
     }
 
     public function send(Request $request)
     {
         $msg = $request->message;
+        $apiKey = env('HF_API_TOKEN'); // Hugging Face API token
+        $model = "facebook/blenderbot-400M-distill";
 
-        $apiKey = env('HF_API_KEY'); // set this in .env
-        $model = "Mistralai/Mixtral-8x7B-Instruct-v0.1";
+        $url = "https://router.huggingface.co/api/models/$model";
 
-        $url = "https://api-inference.huggingface.co/models/$model";
-
-        $payload = json_encode(["inputs" => $msg]);
+        $payload = json_encode([
+            "inputs" => $msg
+        ]);
 
         $headers = [
             "Authorization: Bearer $apiKey",
@@ -37,7 +38,8 @@ class ChatbotController extends Controller
         curl_close($ch);
 
         $json = json_decode($result, true);
-        $reply = $json['generated_text'] ?? $json[0]['generated_text'] ?? "No reply.";
+
+        $reply = $json['generated_text'] ?? "No reply.";
 
         return response()->json(["reply" => $reply]);
     }
