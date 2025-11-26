@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatbotController;
@@ -14,7 +15,12 @@ Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz
 Route::get('/quiz/finish', [QuizController::class, 'finish'])->name('quiz.finish');
 Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('quiz.result');
 
-// routes/web.php
+
 
 Route::get('/chat', [ChatbotController::class, 'index'])->name('chatbot');
 Route::post('/chatbot/message', [ChatbotController::class, 'send'])->name('chatbot.message');
+
+// Awareness page
+Route::get('/awareness', function () {
+    return view('awareness');
+})->name('awareness');
