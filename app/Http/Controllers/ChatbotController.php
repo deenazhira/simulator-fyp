@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ChatbotController extends Controller
 {
@@ -13,34 +14,43 @@ class ChatbotController extends Controller
 
     public function send(Request $request)
     {
-        $msg = $request->message;
-        $apiKey = env('HF_API_TOKEN'); // Hugging Face API token
-        $model = "facebook/blenderbot-400M-distill";
+        // Debug: check API key is loaded
+        // dd(env('OPENAI_API_KEY'));  <-- REMOVE THIS after testing
 
-        $url = "https://router.huggingface.co/api/models/$model";
+        $apiKey = env('OPENAI_API_KEY');
 
-        $payload = json_encode([
-            "inputs" => $msg
+        if (!$apiKey) {
+            return response()->json([
+                "reply" => "ERROR: Missing API key in .env file."
+            ]);
+        }
+
+        $response = Http::withToken($apiKey)->post(
+            'https://api.openai.com/v1/chat/completions',
+            [
+                "model" => "gpt-4o-mini",
+                "messages" => [
+                    [
+                        "role" => "system",
+                        "content" => "You are a phishing attacker simulation bot. Respond like a real attacker."
+                    ],
+                    [
+                        "role" => "user",
+                        "content" => $request->message ?? "Hello"
+                    ]
+                ]
+            ]
+        );
+
+        if (!$response->successful()) {
+            return response()->json([
+                "reply" => "API Error: " . $response->body()
+            ]);
+        }
+
+        return response()->json([
+            "reply" => $response->json()['choices'][0]['message']['content']
         ]);
-
-        $headers = [
-            "Authorization: Bearer $apiKey",
-            "Content-Type: application/json"
-        ];
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        $json = json_decode($result, true);
-
-        $reply = $json['generated_text'] ?? "No reply.";
-
-        return response()->json(["reply" => $reply]);
     }
 }
+
