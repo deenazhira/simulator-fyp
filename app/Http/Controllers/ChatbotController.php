@@ -3,66 +3,48 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class ChatbotController extends Controller
 {
-    protected string $apiUrl;
-    protected string $token;
-    protected string $model;
+    public function send(Request $request)
+    {
+        $msg = $request->message;
 
-    public function __construct()
-{
-    $this->token = config('services.huggingface.token');
-    $this->model = config('services.huggingface.model');
+        $apiKey = env('HUGGINGFACE_KEY');   // from .env
+        $model = "Mistralai/Mixtral-8x7B-Instruct-v0.1";
 
-    // FIX: use text-generation endpoint
-    $this->apiUrl = "https://router.huggingface.co/hf-inference/text-generation/{$this->model}";
-}
+        $url = "https://api-inference.huggingface.co/models/$model";
 
-public function chat(Request $request)
-{
-    $request->validate(['message' => 'required|string|max:2000']);
-    $userMessage = $request->message;
-
-    try {
-        $response = Http::withHeaders([
-            'Authorization' => "Bearer {$this->token}",
-            'Accept'        => 'application/json',
-            'Content-Type'  => 'application/json'
-        ])->post($this->apiUrl, [
-            "inputs" => $userMessage,
-            "parameters" => [
-                "max_new_tokens" => 120,
-                "temperature" => 0.7,
-                "do_sample" => true,
-                "system" =>
-                "You are an attacker pretending to be IT Support. Start friendly, professional, then slowly escalate to asking for credentials."
-            ]
+        $payload = json_encode([
+            "inputs" => $msg
         ]);
 
-        $body = $response->json();
+        $headers = [
+            "Authorization: Bearer $apiKey",
+            "Content-Type: application/json"
+        ];
 
-        Log::info("HF Response:", $body ?? []);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        // FIX: text-generation models return generated_text directly
-        $reply =
-            $body['generated_text']
-            ?? $body[0]['generated_text']
-            ?? "⚠️ Model returned empty response.";
+        $result = curl_exec($ch);
+        curl_close($ch);
 
-        return response()->json(['reply' => trim($reply)]);
+        $json = json_decode($result, true);
 
-    } catch (\Throwable $e) {
-        Log::error("HF Exception: ".$e->getMessage());
-        return response()->json(['reply' => '⚠️ Communication error with HuggingFace.']);
+        if (isset($json[0]['generated_text'])) {
+            $reply = $json[0]['generated_text'];
+        } elseif (isset($json['generated_text'])) {
+            $reply = $json['generated_text'];
+        } else {
+            $reply = "No reply from the model.";
+        }
+
+        return response()->json([
+            "reply" => $reply
+        ]);
     }
-}
-
-    public function index()
-{
-    return view('chatbot');
-}
-
 }

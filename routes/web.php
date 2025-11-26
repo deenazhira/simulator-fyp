@@ -14,11 +14,6 @@ Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz
 Route::get('/quiz/finish', [QuizController::class, 'finish'])->name('quiz.finish');
 Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('quiz.result');
 
-//chatbot
-Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
-Route::post('/chatbot/message', [ChatbotController::class, 'chat'])->name('chatbot.message');
-
-
-
-// routes/web.php or routes/api.php (if API)
-//Route::get('/chatbot/test', [\App\Http\Controllers\ChatbotController::class, 'testCall']);
+Route::post('/chatbot/message', [App\Http\Controllers\ChatbotController::class, 'send'])
+    ->name('chatbot.message');
+Route::view('/chat', 'chatbot')->name('chatbot');
