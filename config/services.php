@@ -14,9 +14,10 @@ return [
     |
     */
     'huggingface' => [
-        'token' => env('HF_API_TOKEN'),
-        'model' => env('HF_MODEL', 'microsoft/DialoGPT-medium'),
-    ],
+    'token' => env('HUGGINGFACE_API_TOKEN'),
+    'model' => env('HUGGINGFACE_MODEL'),
+],
+
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
