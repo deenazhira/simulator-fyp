@@ -79,7 +79,8 @@
             <div class="p-8 bg-purple-50 rounded-xl shadow hover:shadow-lg transition">
                 <h4 class="font-bold text-xl text-purple-800 mb-3">AI Chatbot</h4>
                 <p class="text-gray-700 mb-6">Chat with our AI assistant to learn how to detect fraudulent sender patterns and red flags.</p>
-                <a href="{{ route('chatbot') }}" class="inline-block bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 transition">Chat Now</a>
+<               <a href="{{ route('chatbot') }}">Chat Now</a>
+
             </div>
         </div>
     </div>

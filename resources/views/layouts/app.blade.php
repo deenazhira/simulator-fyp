@@ -17,8 +17,7 @@
             <nav class="space-x-6">
                 <a href="{{ url('/') }}" class="hover:text-purple-700 font-medium">Home</a>
                 <a href="{{ url('/quiz') }}" class="hover:text-purple-700 font-medium">Quiz</a>
-                <a href="{{ url('/chatbot') }}" class="hover:text-purple-700 font-medium">Chatbot</a>
-                <a href="#feedback" class="hover:text-purple-700 font-medium">Feedback</a>
+                <a href="{{ route('chatbot') }}" class="hover:text-purple-700 font-medium">Chatbot</a>                <a href="#feedback" class="hover:text-purple-700 font-medium">Feedback</a>
                 <a href="#awareness" class="hover:text-purple-700 font-medium">Awareness</a>
             </nav>
             <a href="#get-started" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">Get Started</a>

@@ -6,18 +6,21 @@ use Illuminate\Http\Request;
 
 class ChatbotController extends Controller
 {
+    public function index()
+    {
+        return view('chatbot'); // show chatbot page
+    }
+
     public function send(Request $request)
     {
         $msg = $request->message;
 
-        $apiKey = env('HUGGINGFACE_KEY');   // from .env
+        $apiKey = env('HF_API_KEY'); // set this in .env
         $model = "Mistralai/Mixtral-8x7B-Instruct-v0.1";
 
         $url = "https://api-inference.huggingface.co/models/$model";
 
-        $payload = json_encode([
-            "inputs" => $msg
-        ]);
+        $payload = json_encode(["inputs" => $msg]);
 
         $headers = [
             "Authorization: Bearer $apiKey",
@@ -34,17 +37,8 @@ class ChatbotController extends Controller
         curl_close($ch);
 
         $json = json_decode($result, true);
+        $reply = $json['generated_text'] ?? $json[0]['generated_text'] ?? "No reply.";
 
-        if (isset($json[0]['generated_text'])) {
-            $reply = $json[0]['generated_text'];
-        } elseif (isset($json['generated_text'])) {
-            $reply = $json['generated_text'];
-        } else {
-            $reply = "No reply from the model.";
-        }
-
-        return response()->json([
-            "reply" => $reply
-        ]);
+        return response()->json(["reply" => $reply]);
     }
 }

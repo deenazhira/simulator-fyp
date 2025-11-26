@@ -12,7 +12,7 @@
             <div class="text-gray-500 text-center">Say hi to start chatting 💬</div>
         </div>
 
-        <form id="chat-form" class="flex border-t">
+        <form id="chat-form" class="flex border-t mt-2">
             <input type="text" id="message" class="flex-grow p-4 focus:outline-none" placeholder="Type a message..." autocomplete="off">
             <button type="submit" class="bg-purple-600 text-white px-6 hover:bg-purple-700">Send</button>
         </form>
@@ -20,41 +20,17 @@
 </div>
 
 <script>
-   window.addEventListener("DOMContentLoaded", async function() {
-    const chatbox = document.getElementById('chatbox');
+const chatbox = document.getElementById('chatbox');
 
-    // Show loading
-    chatbox.innerHTML += `<div class="text-gray-500 text-center">Connecting to support...</div>`;
-
-    // Send initial invisible command to chatbot
-    const response = await fetch('{{ route('chatbot.message') }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            message: "Start attacker conversation. Greet the user professionally as IT support."
-        })
-    });
-
-    const data = await response.json();
-
-    // Show first attacker message
-    chatbox.innerHTML = `<div class="text-left text-gray-700"><strong>Bot:</strong> ${data.reply}</div>`;
-    chatbox.scrollTop = chatbox.scrollHeight;
-});
-
-document.getElementById('chat-form').addEventListener('submit', async function(e) {
+document.getElementById('chat-form').addEventListener('submit', async function(e){
     e.preventDefault();
-
     const message = document.getElementById('message').value.trim();
     if (!message) return;
 
-    const chatbox = document.getElementById('chatbox');
     chatbox.innerHTML += `<div class="text-right text-purple-700"><strong>You:</strong> ${message}</div>`;
+    document.getElementById('message').value = '';
 
-    const response = await fetch('{{ route('chatbot.message') }}', {
+    const res = await fetch('{{ route('chatbot.message') }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -63,9 +39,8 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
         body: JSON.stringify({ message })
     });
 
-    const data = await response.json();
+    const data = await res.json();
     chatbox.innerHTML += `<div class="text-left text-gray-700"><strong>Bot:</strong> ${data.reply}</div>`;
-    document.getElementById('message').value = '';
     chatbox.scrollTop = chatbox.scrollHeight;
 });
 </script>
