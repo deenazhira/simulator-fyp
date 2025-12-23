@@ -7,18 +7,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::create('quizzes', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id'); // FK to users.user_id
-            $table->string('title');
-            $table->timestamps();
+{
+    Schema::create('quizzes', function (Blueprint $table) {
+        $table->id();
 
-            $table->foreign('user_id')
-                  ->references('user_id') // must match users table
-                  ->on('users')
-                  ->onDelete('cascade');
-        });
+        $table->unsignedBigInteger('user_id');
+        $table->foreign('user_id')
+              ->references('user_id')
+              ->on('users')
+              ->cascadeOnDelete();
+
+        $table->string('title');
+        $table->timestamps();
+
+});
+
     }
 
     public function down(): void

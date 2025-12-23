@@ -13,10 +13,11 @@
                 PhishDefend AI helps users detect and understand phishing attempts through smart AI analysis and educational tools.
             </p>
             <div class="space-x-4">
-                <a href="#register"
-                   class="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-purple-700 transition">
-                   Create Account Now
-                </a>
+                <a href="{{ url('/register') }}"
+                class="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-purple-700 transition">
+            Create Account Now
+            </a>
+
                 <p class="inline-block text-gray-700 font-medium">
                     Watch Demo <a href="#demo" class="text-yellow-400 font-semibold hover:underline">Here</a>
                 </p>
@@ -79,7 +80,7 @@
             <div class="p-8 bg-purple-50 rounded-xl shadow hover:shadow-lg transition">
                 <h4 class="font-bold text-xl text-purple-800 mb-3">AI Chatbot</h4>
                 <p class="text-gray-700 mb-6">Chat with our AI assistant to learn how to detect fraudulent sender patterns and red flags.</p>
-<               <a href="{{ route('chatbot') }}">Chat Now</a>
+               <a href="{{ route('chatbot') }}">Chat Now</a>
 
             </div>
         </div>
@@ -97,7 +98,7 @@
                 <h4 class="text-xl font-bold text-purple-800 mb-3">Individual</h4>
                 <p class="text-gray-600 mb-6">Access to phishing simulation quizzes and AI chatbot support.</p>
                 <p class="text-3xl font-bold text-purple-700 mb-6">FREE</p>
-                <a href="#register" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">Get Started</a>
+                <a href="{{ url('/register') }}" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">Get Started</a>
             </div>
 
             <!-- Enterprise -->
