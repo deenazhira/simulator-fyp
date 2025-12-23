@@ -24,3 +24,7 @@ Route::post('/chatbot/message', [ChatbotController::class, 'send'])->name('chatb
 Route::get('/awareness', function () {
     return view('awareness');
 })->name('awareness');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
