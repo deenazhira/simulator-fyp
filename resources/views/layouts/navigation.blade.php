@@ -50,11 +50,12 @@
                         Log in
                     </a>
 
-                    <a href="{{ url('/register') }}"
-   style="background-color:#AF00E4;"
-   class="text-white px-6 py-2 rounded-lg font-semibold
-          hover:opacity-90 transition shadow-sm">
+                    <a href="{{ route('register.choose') }}"
+                        style="background-color:#AF00E4;"
+                        class="text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition shadow-sm">
     Register
+</a>
+
 </a>
 
                 @endguest

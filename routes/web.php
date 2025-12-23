@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\TrainerAuth\RegisteredTrainerController;
 
 Route::get('/', function () {
     return view('home');
@@ -28,3 +30,15 @@ Route::get('/awareness', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+
+Route::get('/register/user', [RegisteredUserController::class, 'create'])->name('register.user');
+Route::post('/register/user', [RegisteredUserController::class, 'store']);
+
+
+Route::get('/register/trainer', [RegisteredTrainerController::class, 'create'])->name('register.trainer');
+Route::post('/register/trainer', [RegisteredTrainerController::class, 'store']);
+
+Route::get('/register', function () {
+    return view('auth.register-choose');
+})->name('register.choose');

@@ -1,11 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center py-10 px-6">
+<div class="min-h-screen flex items-center justify-center py-10">
     <div class="w-full max-w-md bg-white p-8 rounded-xl shadow">
-
-        <h2 class="text-3xl font-black mb-6 text-center">
-            <span style="color:#651FFF;">User</span>
+        <h2 class="text-2xl font-black mb-6">
+            <span style="color:#651FFF;">Trainer</span>
             <span style="color:#AF00E4;"> Register</span>
         </h2>
 
@@ -19,31 +18,27 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register.user') }}">
+        <form method="POST" action="{{ route('register.trainer') }}">
             @csrf
 
-            <!-- Name -->
             <div class="mb-4">
                 <label class="block text-sm font-semibold mb-1">Name</label>
                 <input name="name" value="{{ old('name') }}" required
                        class="w-full border rounded-lg px-4 py-2" />
             </div>
 
-            <!-- Email -->
             <div class="mb-4">
                 <label class="block text-sm font-semibold mb-1">Email</label>
                 <input type="email" name="email" value="{{ old('email') }}" required
                        class="w-full border rounded-lg px-4 py-2" />
             </div>
 
-            <!-- Password -->
             <div class="mb-4">
                 <label class="block text-sm font-semibold mb-1">Password</label>
                 <input type="password" name="password" required
                        class="w-full border rounded-lg px-4 py-2" />
             </div>
 
-            <!-- Confirm -->
             <div class="mb-6">
                 <label class="block text-sm font-semibold mb-1">Confirm Password</label>
                 <input type="password" name="password_confirmation" required
@@ -53,15 +48,12 @@
             <button type="submit"
                     style="background-color:#AF00E4;"
                     class="w-full text-white py-2 rounded-lg font-semibold hover:opacity-90 transition">
-                Create User Account
+                Create Trainer Account
             </button>
 
-            <div class="mt-6 text-sm text-center">
-                Registering as trainer?
-                <a href="{{ route('register.trainer') }}"
-                   class="hover:underline"
-                   style="color:#651FFF;">
-                    Register as Trainer
+            <div class="mt-5 text-sm text-center">
+                <a href="{{ route('register.user') }}" class="text-[#651FFF] hover:underline">
+                    Register as Normal User instead
                 </a>
             </div>
         </form>
