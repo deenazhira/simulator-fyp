@@ -60,7 +60,7 @@
         <div id="users-table" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-6 flex justify-between items-center border-b border-gray-100">
                 <h3 class="font-bold text-lg text-gray-800">Team Performance</h3>
-                <a href="#" class="bg-[#651FFF] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700">
+                <a href="{{ route('trainer.users.index') }}" class="bg-[#651FFF] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700">
                     Manage Users
                 </a>
             </div>
