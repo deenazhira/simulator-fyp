@@ -11,10 +11,10 @@
             <!-- Title -->
             <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6"
                 style="text-shadow: 0 4px 15px rgba(0,0,0,0.45);">
-                <span class="text-white">Phish</span>
-                <span style="color:#00E5FF;">Defend</span>
-                <span class="text-white"> AI</span>
+                <span class="text-white">Phish</span><span style="color:#00E5FF;">Defend</span>
+                <span style="color:#00E5FF;"> AI</span>
             </h1>
+
 
             <!-- Subtitle -->
             <p class="text-white text-lg md:text-xl leading-relaxed max-w-xl mb-10">
