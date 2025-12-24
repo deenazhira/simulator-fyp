@@ -2,39 +2,68 @@
 
 @section('content')
 <!-- Hero Section -->
-<section id="home" class="pt-32 pb-20 bg-gradient-to-b from-purple-50 to-white">
+<section id="home" class="pt-32 pb-20" style="background-color:#400088;">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6">
+
         <!-- Left Text -->
         <div class="md:w-1/2 text-left mb-10 md:mb-0">
-            <h2 class="text-5xl font-extrabold mb-4 text-purple-800">
-                PhishDefend <span class="text-purple-600">AI</span>
-            </h2>
-            <p class="text-gray-700 mb-8 leading-relaxed max-w-md">
-                PhishDefend AI helps users detect and understand phishing attempts through smart AI analysis and educational tools.
+
+            <!-- Title -->
+            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6"
+                style="text-shadow: 0 4px 15px rgba(0,0,0,0.45);">
+                <span class="text-white">Phish</span><span style="color:#00E5FF;">Defend</span>
+                <span style="color:#00E5FF;"> AI</span>
+            </h1>
+
+
+            <!-- Subtitle -->
+            <p class="text-white text-lg md:text-xl leading-relaxed max-w-xl mb-10">
+                Train Yourself With AI-Based Powered Simulations And Real-Life Scenario
             </p>
-            <div class="space-x-4">
-                <a href="#register"
-                   class="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-purple-700 transition">
-                   Create Account Now
+
+            <!-- Buttons -->
+            <div class="flex flex-wrap items-center gap-8">
+
+                <!-- CTA -->
+                <a href="{{ url('/register') }}"
+                    style="background-color:#00E5FF; color:black;"
+                    class="inline-flex items-center justify-center
+                    px-8 py-4 rounded-lg font-semibold
+                    shadow-lg hover:opacity-90 transition">
+                    Create Account
                 </a>
-                <p class="inline-block text-gray-700 font-medium">
-                    Watch Demo <a href="#demo" class="text-yellow-400 font-semibold hover:underline">Here</a>
+
+
+
+                <!-- Watch Demo -->
+                <p class="text-white font-medium text-lg">
+                    Watch Demo
+                    <a href="#demo"
+                       class="ml-1 font-semibold underline decoration-2"
+                       style="color:#FFE207;">
+                        Here
+                    </a>
                 </p>
+
             </div>
         </div>
 
         <!-- Right Image -->
         <div class="md:w-1/2 flex justify-center">
-            <img src="{{ asset('images/logo.png') }}" alt="PhishDefend AI Illustration" class="w-96 md:w-[450px] rounded-lg shadow-lg">
+            <img src="{{ asset('images/logo.png') }}"
+                 alt="PhishDefend AI Illustration"
+                 class="w-96 md:w-[460px] drop-shadow-2xl select-none">
         </div>
+
     </div>
 </section>
+
 
 <!-- About Us -->
 <section id="about" class="py-20 bg-gradient-to-r from-purple-50 to-white">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 px-6">
         <div class="md:w-1/2 flex justify-center">
-            <img src="{{ asset('images/about-us.svg') }}" alt="About PhishDefend AI" class="w-96 md:w-[450px] rounded-lg shadow-lg">
+            <img src="{{ asset('images/aboutus.png') }}" alt="About PhishDefend AI" class="w-96 md:w-[450px] rounded-lg shadow-lg">
         </div>
         <div class="md:w-1/2 text-left">
             <h3 class="text-3xl font-bold text-purple-800 mb-4">ABOUT US</h3>
@@ -79,7 +108,7 @@
             <div class="p-8 bg-purple-50 rounded-xl shadow hover:shadow-lg transition">
                 <h4 class="font-bold text-xl text-purple-800 mb-3">AI Chatbot</h4>
                 <p class="text-gray-700 mb-6">Chat with our AI assistant to learn how to detect fraudulent sender patterns and red flags.</p>
-<               <a href="{{ route('chatbot') }}">Chat Now</a>
+               <a href="{{ route('chatbot') }}">Chat Now</a>
 
             </div>
         </div>
@@ -97,7 +126,7 @@
                 <h4 class="text-xl font-bold text-purple-800 mb-3">Individual</h4>
                 <p class="text-gray-600 mb-6">Access to phishing simulation quizzes and AI chatbot support.</p>
                 <p class="text-3xl font-bold text-purple-700 mb-6">FREE</p>
-                <a href="#register" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">Get Started</a>
+                <a href="{{ url('/register') }}" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">Get Started</a>
             </div>
 
             <!-- Enterprise -->
