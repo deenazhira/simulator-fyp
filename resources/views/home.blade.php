@@ -170,7 +170,7 @@
 
 <section id="feedback" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto text-center px-6">
-        <h3 class="text-3xl font-bold text-gray-900 mb-12">User Feedback</h3>
+        <h3 class="text-3xl font-bold text-gray-900 mb-12">Past Feedbacks</h3>
         <div class="grid md:grid-cols-3 gap-8">
             <div class="bg-purple-100 p-8 rounded-2xl shadow-sm hover:shadow-md hover:bg-purple-200 transition border border-purple-200">
                 <div class="flex text-yellow-500 justify-center mb-4">★★★★★</div>

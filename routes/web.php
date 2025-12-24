@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TrainerDashboardController;
 use App\Http\Controllers\TrainerUserController;
 use App\Http\Controllers\TrainerFeedbackController;
+use App\Http\Controllers\UserFeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,7 +96,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
 
     // Feedback Index (The List)
-Route::get('/trainer/feedbacks', [TrainerFeedbackController::class, 'index'])->name('trainer.feedback.index');
+    Route::get('/trainer/feedbacks', [TrainerFeedbackController::class, 'index'])->name('trainer.feedback.index');
+
+    // User View Feedback
+    Route::get('/my-feedback', [UserFeedbackController::class, 'index'])->name('user.feedback.index');
+
+
 });
 
 // Feedback Routes

@@ -47,7 +47,8 @@
                         @endif
                     </a>
 
-                    <a href="{{ route('home') }}#feedback" class="hover:text-[#651FFF] transition">
+                    <a href="{{ route('user.feedback.index') }}"
+                        class="hover:text-[#651FFF] transition {{ request()->routeIs('user.feedback.index') ? 'text-[#651FFF] font-semibold' : '' }}">
                         Feedback
                     </a>
 
