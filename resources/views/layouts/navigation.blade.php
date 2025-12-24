@@ -19,7 +19,7 @@
                         Dashboard
                     </a>
 
-                    <a href="#feedback" class="hover:text-[#651FFF] transition">
+                    <a href="{{ route('home') }}#feedback" class="hover:text-[#651FFF] transition">
                         Feedback
                     </a>
 
@@ -46,7 +46,7 @@
                         @endif
                     </a>
 
-                    <a href="#feedback" class="hover:text-[#651FFF] transition">
+                    <a href="{{ route('home') }}#feedback" class="hover:text-[#651FFF] transition">
                         Feedback
                     </a>
 
