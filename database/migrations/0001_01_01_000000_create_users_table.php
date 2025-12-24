@@ -6,34 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    // In database/migrations/xxxx_create_users_table.php
+
+public function up(): void
 {
     Schema::create('users', function (Blueprint $table) {
-        $table->id('user_id');
-        $table->string('user_name');
-        $table->string('user_email')->unique();
+        $table->id('user_id'); // Primary Key
+        $table->string('user_name'); // Changed from 'name' to match your controller
+        $table->string('user_email')->unique(); // Changed from 'email'
         $table->timestamp('email_verified_at')->nullable();
-        $table->string('user_password');
+        $table->string('user_password'); // Changed from 'password'
 
-        // UPDATE 1: Add 'trainer' and 'admin' to roles
-        // 'public' = Free User
-        // 'enterprise' = Paid Staff (Under a trainer)
-        // 'trainer' = The Manager/Trainer
-        // 'admin' = Super Admin
+        // 1. ROLES: 'public' (Free), 'enterprise' (Staff), 'trainer' (Manager)
         $table->enum('user_role', ['public', 'enterprise', 'trainer', 'admin'])->default('public');
 
-        // UPDATE 2: Link a user to a specific trainer
-        // If I am a staff member, this ID points to my Manager.
-        // If I am a Public user or a Trainer myself, this is NULL.
+        // 2. LINK: If I am staff, who is my manager? (Nullable for Public/Trainers)
         $table->unsignedBigInteger('trainer_id')->nullable();
 
         $table->string('company_name')->nullable();
         $table->rememberToken();
         $table->timestamps();
-
-        // Optional: Add foreign key constraint if you want strict linking
-        // $table->foreign('trainer_id')->references('user_id')->on('users');
     });
+
 }
 
     public function down(): void
