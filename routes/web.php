@@ -5,6 +5,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TrainerAuth\RegisteredTrainerController;
+use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
     return view('home');
@@ -42,3 +43,8 @@ Route::post('/register/trainer', [RegisteredTrainerController::class, 'store']);
 Route::get('/register', function () {
     return view('auth.register-choose');
 })->name('register.choose');
+
+// Login Routes
+Route::get('/login', [LoginController::class, 'create'])->name('login');
+Route::post('/login', [LoginController::class, 'store']);
+Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
