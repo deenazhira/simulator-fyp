@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -8,52 +9,78 @@ use App\Http\Controllers\TrainerAuth\RegisteredTrainerController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TrainerDashboardController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// 1. Home Route
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// Quiz routes
+// 2. Authentication Routes
+// Login
+Route::get('/login', [LoginController::class, 'create'])->name('login');
+Route::post('/login', [LoginController::class, 'store']);
+Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+// Registration Selection
+Route::get('/register', function () {
+    return view('auth.register-choose');
+})->name('register.choose');
+
+// User Registration
+Route::get('/register/user', [RegisteredUserController::class, 'create'])->name('register.user');
+Route::post('/register/user', [RegisteredUserController::class, 'store']);
+
+// Trainer Registration
+Route::get('/register/trainer', [RegisteredTrainerController::class, 'create'])->name('register.trainer');
+Route::post('/register/trainer', [RegisteredTrainerController::class, 'store']);
+
+
+// 3. SMART DASHBOARD ROUTE (Crucial Logic)
+// This handles the redirection: Trainer -> Trainer Dashboard, User -> User Dashboard
+Route::get('/dashboard', function () {
+
+    // Safety check: ensure user is actually logged in (though middleware handles this)
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+
+    // If Trainer -> Show the Trainer Dashboard Controller
+    if (Auth::user()->user_role === 'trainer') {
+        return app(TrainerDashboardController::class)->index();
+    }
+
+    // If Normal User -> Show the default user dashboard view
+    return view('dashboard');
+
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+// 4. Feature Routes
+// Quiz
 Route::get('/quiz', [QuizController::class, 'welcome'])->name('quiz.welcome');
 Route::get('/quiz/start/{q?}', [QuizController::class, 'showQuestion'])->name('quiz.start');
 Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz.answer');
 Route::get('/quiz/finish', [QuizController::class, 'finish'])->name('quiz.finish');
 Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('quiz.result');
 
-
-
+// Chatbot
 Route::get('/chat', [ChatbotController::class, 'index'])->name('chatbot');
 Route::post('/chatbot/message', [ChatbotController::class, 'send'])->name('chatbot.message');
 
-// Awareness page
+// Awareness
 Route::get('/awareness', function () {
     return view('awareness');
 })->name('awareness');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
 
-
-Route::get('/register/user', [RegisteredUserController::class, 'create'])->name('register.user');
-Route::post('/register/user', [RegisteredUserController::class, 'store']);
-
-
-Route::get('/register/trainer', [RegisteredTrainerController::class, 'create'])->name('register.trainer');
-Route::post('/register/trainer', [RegisteredTrainerController::class, 'store']);
-
-Route::get('/register', function () {
-    return view('auth.register-choose');
-})->name('register.choose');
-
-// Login Routes
-Route::get('/login', [LoginController::class, 'create'])->name('login');
-Route::post('/login', [LoginController::class, 'store']);
-Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-
-//dashboard
-// Group routes that require 'auth' AND 'trainer' role check
+// 5. Specific Trainer Routes
+// Allows direct access to trainer specific pages if needed
 Route::middleware(['auth'])->group(function () {
-    // Add a check in your controller or middleware to ensure only 'trainer' role accesses this
     Route::get('/trainer/dashboard', [TrainerDashboardController::class, 'index'])->name('trainer.dashboard');
 });
 

@@ -2,80 +2,83 @@
     <div class="max-w-7xl mx-auto px-8">
         <div class="h-20 flex items-center justify-between">
 
-            <!-- LEFT: BRAND (BOLDER) -->
-            <a href="{{ route('home') }}"
-               class="text-3xl md:text-[32px] font-extrabold tracking-tight">
+            <a href="{{ route('home') }}" class="text-3xl md:text-[32px] font-extrabold tracking-tight">
                 <span style="color:#651FFF;">Phish</span><span style="color:#AF00E4;">Defend</span><span style="color:#AF00E4;"> AI</span>
             </a>
 
-            <!-- CENTER: NAV LINKS -->
             <div class="flex items-center gap-10 text-lg font-medium text-gray-700">
 
                 <a href="{{ route('home') }}"
-                   class="hover:text-[#651FFF] transition
-                   {{ request()->routeIs('home') ? 'text-[#651FFF] font-semibold' : '' }}">
+                   class="hover:text-[#651FFF] transition {{ request()->routeIs('home') ? 'text-[#651FFF] font-semibold' : '' }}">
                     Home
                 </a>
 
-                <a href="{{ route('quiz.welcome') }}"
-                   class="hover:text-[#651FFF] transition
-                   {{ request()->routeIs('quiz.*') ? 'text-[#651FFF] font-semibold' : '' }}">
-                    Simulator
-                </a>
+                @if(Auth::check() && Auth::user()->user_role === 'trainer')
+                    <a href="{{ route('dashboard') }}"
+                       class="hover:text-[#651FFF] transition {{ request()->routeIs('dashboard') ? 'text-[#651FFF] font-semibold' : '' }}">
+                        Dashboard
+                    </a>
 
-                <a href="{{ route('chatbot') }}"
-            class="flex items-center gap-1 hover:text-[#651FFF] transition {{ request()->routeIs('chatbot') ? 'text-[#651FFF] font-semibold' : '' }}">
+                    <a href="#feedback" class="hover:text-[#651FFF] transition">
+                        Feedback
+                    </a>
 
-            Chatbot
+                    <a href="{{ url('/awareness') }}"
+                       class="hover:text-[#651FFF] transition {{ request()->is('awareness') ? 'text-[#651FFF] font-semibold' : '' }}">
+                        Awareness
+                    </a>
 
-            {{-- Show Lock if user is Logged In AND is Public --}}
-                @if(Auth::check() && Auth::user()->user_role === 'public')
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                </svg>
-        @endif
-            </a>
+                @else
+                    <a href="{{ route('quiz.welcome') }}"
+                       class="hover:text-[#651FFF] transition {{ request()->routeIs('quiz.*') ? 'text-[#651FFF] font-semibold' : '' }}">
+                        Simulator
+                    </a>
 
-                <a href="#feedback"
-                   class="hover:text-[#651FFF] transition">
-                    Feedback
-                </a>
+                    <a href="{{ route('chatbot') }}"
+                       class="flex items-center gap-1 hover:text-[#651FFF] transition {{ request()->routeIs('chatbot') ? 'text-[#651FFF] font-semibold' : '' }}">
+                        Chatbot
 
-                <a href="{{ url('/awareness') }}"
-                   class="hover:text-[#651FFF] transition
-                   {{ request()->is('awareness') ? 'text-[#651FFF] font-semibold' : '' }}">
-                    Awareness
-                </a>
+                        {{-- Lock Icon for Free (Public) Users --}}
+                        @if(Auth::check() && Auth::user()->user_role === 'public')
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                            </svg>
+                        @endif
+                    </a>
+
+                    <a href="#feedback" class="hover:text-[#651FFF] transition">
+                        Feedback
+                    </a>
+
+                    <a href="{{ url('/awareness') }}"
+                       class="hover:text-[#651FFF] transition {{ request()->is('awareness') ? 'text-[#651FFF] font-semibold' : '' }}">
+                        Awareness
+                    </a>
+                @endif
             </div>
 
-            <!-- RIGHT: AUTH -->
             <div class="flex items-center gap-6 text-sm font-medium">
 
                 @guest
-                    <a href="{{ url('/login') }}"
-                       class="text-gray-700 hover:text-[#651FFF] transition">
+                    <a href="{{ url('/login') }}" class="text-gray-700 hover:text-[#651FFF] transition">
                         Log in
                     </a>
 
                     <a href="{{ route('register.choose') }}"
-                        style="background-color:#AF00E4;"
-                        class="text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition shadow-sm">
-    Register
-</a>
-
-</a>
-
+                       style="background-color:#AF00E4;"
+                       class="text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition shadow-sm">
+                        Register
+                    </a>
                 @endguest
 
                 @auth
                     <span class="text-[#651FFF] font-semibold">
-                        {{ Auth::user()->name }}
+                        {{ Auth::user()->user_name }}
                     </span>
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit"
-                                class="text-gray-700 hover:text-red-500 transition">
+                        <button type="submit" class="text-gray-700 hover:text-red-500 transition">
                             Log out
                         </button>
                     </form>
@@ -85,3 +88,4 @@
         </div>
     </div>
 </nav>
+
