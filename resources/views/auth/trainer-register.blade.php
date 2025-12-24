@@ -1,16 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center py-10">
-    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow">
-        <h2 class="text-2xl font-black mb-6">
-            <span style="color:#651FFF;">Trainer</span>
-            <span style="color:#AF00E4;"> Register</span>
-        </h2>
+<div class="min-h-screen flex flex-col items-center justify-center bg-[#4A0080] font-sans px-4 py-8">
+
+    <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-white tracking-wide">
+            Trainer <span class="text-[#00E0FF]">Registration</span>
+        </h1>
+        <p class="text-gray-200 mt-2 text-sm">Create an account to manage your team.</p>
+    </div>
+
+    <div class="w-full max-w-lg bg-[#9F85FF] p-8 rounded-3xl shadow-2xl relative overflow-hidden">
 
         @if ($errors->any())
-            <div class="mb-4 text-sm text-red-600">
-                <ul class="list-disc pl-5">
+            <div class="mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded text-sm">
+                <p class="font-bold">Oops! Something went wrong:</p>
+                <ul class="list-disc ml-5 mt-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -18,52 +23,69 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register.trainer') }}">
+        <form method="POST" action="{{ route('register.trainer') }}" x-data="{ showPass: false, showConfirm: false }">
             @csrf
 
-            <div class="mb-4">
-                <label class="block text-sm font-semibold mb-1">Name</label>
+            <div class="mb-5">
+                <label class="block text-gray-900 font-semibold mb-2 ml-1">Full Name</label>
                 <input name="name" value="{{ old('name') }}" required
-                       class="w-full border rounded-lg px-4 py-2" />
+                       class="w-full px-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-[#5D3EFF] text-gray-800 placeholder-gray-400 bg-white shadow-sm"
+                       placeholder="Enter your full name" />
             </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-semibold mb-1">Company / Department</label>
+            <div class="mb-5">
+                <label class="block text-gray-900 font-semibold mb-2 ml-1">Company / Department</label>
                 <input name="company_name" value="{{ old('company_name') }}" required
-                       class="w-full border rounded-lg px-4 py-2"
+                       class="w-full px-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-[#5D3EFF] text-gray-800 placeholder-gray-400 bg-white shadow-sm"
                        placeholder="e.g. Shell Security Team" />
             </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-semibold mb-1">Email</label>
+            <div class="mb-5">
+                <label class="block text-gray-900 font-semibold mb-2 ml-1">Work Email</label>
                 <input type="email" name="email" value="{{ old('email') }}" required
-                       class="w-full border rounded-lg px-4 py-2" />
+                       class="w-full px-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-[#5D3EFF] text-gray-800 placeholder-gray-400 bg-white shadow-sm"
+                       placeholder="name@company.com" />
             </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-semibold mb-1">Password</label>
-                <input type="password" name="password" required
-                       class="w-full border rounded-lg px-4 py-2" />
+            <div class="mb-5 relative">
+                <div class="flex justify-between items-center mb-2 ml-1">
+                    <label class="block text-gray-900 font-semibold">Password</label>
+                    <button type="button" @click="showPass = !showPass" class="text-xs text-gray-800 hover:text-white focus:outline-none">
+                        <span x-text="showPass ? 'Hide' : 'Show'"></span>
+                    </button>
+                </div>
+                <input :type="showPass ? 'text' : 'password'" name="password" required
+                       class="w-full px-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-[#5D3EFF] text-gray-800 placeholder-gray-400 bg-white shadow-sm"
+                       placeholder="Create a strong password" />
             </div>
 
-            <div class="mb-6">
-                <label class="block text-sm font-semibold mb-1">Confirm Password</label>
-                <input type="password" name="password_confirmation" required
-                       class="w-full border rounded-lg px-4 py-2" />
+            <div class="mb-8 relative">
+                <div class="flex justify-between items-center mb-2 ml-1">
+                    <label class="block text-gray-900 font-semibold">Confirm Password</label>
+                    <button type="button" @click="showConfirm = !showConfirm" class="text-xs text-gray-800 hover:text-white focus:outline-none">
+                        <span x-text="showConfirm ? 'Hide' : 'Show'"></span>
+                    </button>
+                </div>
+                <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required
+                       class="w-full px-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-[#5D3EFF] text-gray-800 placeholder-gray-400 bg-white shadow-sm"
+                       placeholder="Repeat password" />
             </div>
 
             <button type="submit"
-                    style="background-color:#AF00E4;"
-                    class="w-full text-white py-2 rounded-lg font-semibold hover:opacity-90 transition">
-                Create Trainer Account
+                    class="w-full block bg-[#5D3EFF] text-white py-3 rounded-full font-bold text-lg hover:bg-[#4a2fe0] transition shadow-lg transform hover:-translate-y-1">
+                Create Account
             </button>
 
-            <div class="mt-5 text-sm text-center">
-                <a href="{{ route('register.user') }}" class="text-[#651FFF] hover:underline">
-                    Register as Normal User instead
+            <div class="mt-6 text-center text-gray-900 text-sm">
+                Not a trainer?
+                <a href="{{ route('register.user') }}" class="font-bold text-[#00E0FF] hover:text-white hover:underline transition">
+                    Register as Normal User
                 </a>
             </div>
         </form>
     </div>
 </div>
+
+<script src="//unpkg.com/alpinejs" defer></script>
 @endsection
+
