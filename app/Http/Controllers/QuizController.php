@@ -77,7 +77,7 @@ class QuizController extends Controller
     // ===============================
     public function welcome()
     {
-        return view('quiz-welcome');
+        return view('quiz/quiz-welcome');
     }
 
     // ===============================
@@ -94,7 +94,7 @@ class QuizController extends Controller
         $question = $this->questions[$q - 1];
         $total = count($this->questions);
 
-        return view('quiz', compact('question', 'total', 'q'));
+        return view('quiz/quiz', compact('question', 'total', 'q'));
     }
 
     // ===============================
@@ -144,7 +144,7 @@ class QuizController extends Controller
 
         $total = count($questions);
 
-        return view('quiz-finish', [
+        return view('quiz/quiz-finish', [
             'results' => $results,
             'score' => $score,
             'total' => $total,
@@ -178,7 +178,7 @@ class QuizController extends Controller
 
         $annotations = $annotationsPerQuestion[$index] ?? [];
 
-        return view('quiz-result', [
+        return view('quiz/quiz-result', [
             'index' => $index,
             'question' => $question,
             'annotations' => $annotations,
