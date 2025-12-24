@@ -77,11 +77,21 @@
                 Create User Account
             </button>
 
-            <div class="mt-6 text-center text-gray-900 text-sm">
-                Need a Trainer account?
-                <a href="{{ route('register.trainer') }}" class="font-bold text-[#00E0FF] hover:text-white hover:underline transition">
-                    Register as Trainer
-                </a>
+            <div class="mt-8 pt-6 border-t border-purple-400/30 text-center space-y-3">
+
+                <p class="text-gray-900 text-sm">
+                    Already have an account?
+                    <a href="{{ route('login') }}" class="font-bold text-white text-lg hover:text-[#00E0FF] hover:underline transition ml-1">
+                        Log In
+                    </a>
+                </p>
+
+                <p class="text-gray-800 text-xs">
+                    Need a Trainer account?
+                    <a href="{{ route('register.trainer') }}" class="font-semibold text-purple-900 hover:text-white hover:underline transition">
+                        Register as Trainer
+                    </a>
+                </p>
             </div>
         </form>
     </div>
