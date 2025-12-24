@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth; // ✅ Added Auth Facade
 
 class ChatbotController extends Controller
 {
     public function index()
     {
-        return view('chatbot');
+        // 🔒 SECURITY CHECK:
+        // If the user is a 'public' (free) user, show the Upgrade Page.
+        if (Auth::check() && Auth::user()->user_role === 'public') {
+            // Make sure you created resources/views/chatbot/upgrade.blade.php
+            return view('chatbot.upgrade');
+        }
+
+        // ✅ FIXED PATH:
+        // Since you moved the file to resources/views/chatbot/chatbot.blade.php,
+        // we use 'chatbot.chatbot' to find it.
+        return view('chatbot.chatbot');
     }
 
     /**
@@ -112,6 +123,14 @@ class ChatbotController extends Controller
 
     public function send(Request $request)
     {
+        // 🔒 SECURITY CHECK for API:
+        // Prevent 'public' users from bypassing the upgrade page using tools/scripts
+        if (Auth::check() && Auth::user()->user_role === 'public') {
+            return response()->json([
+                "reply" => "Access Denied. Please upgrade to Enterprise to use this feature."
+            ], 403);
+        }
+
         $userMessage = trim((string) $request->input('message', ''));
 
         $history = session('chat_history', []);
@@ -296,3 +315,4 @@ class ChatbotController extends Controller
         return true;
     }
 }
+
