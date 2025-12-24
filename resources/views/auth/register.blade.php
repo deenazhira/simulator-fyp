@@ -37,7 +37,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-semibold mb-1">Trainer/Manager Email (Optional)</label>
+                <label class="block text-sm font-semibold mb-1">Trainer Email (Optional)</label>
                 <p class="text-xs text-gray-500 mb-1">If you are a staff member, enter your trainer's email here to join their team.</p>
                 <input type="email" name="trainer_email" value="{{ old('trainer_email') }}"
                     class="w-full border rounded-lg px-4 py-2" placeholder="manager@shell.com" />
