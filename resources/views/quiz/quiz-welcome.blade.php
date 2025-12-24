@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen flex flex-col justify-center items-center bg-purple-800 text-center px-4">
+<div class="min-h-screen flex flex-col justify-center items-center bg-[#4A0080] text-center px-4">
 
     <!-- Title -->
     <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-8">

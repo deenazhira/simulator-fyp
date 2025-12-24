@@ -1,51 +1,48 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto py-8">
+<div class="container mx-auto pb-8 mt-6 px-4">
 
-    <!-- Top section: title, question numbers, buttons -->
-    <div class="bg-purple-700 text-white rounded-t-xl p-8 text-center shadow-md">
+    <div class="bg-[#4A0080] text-white p-10 text-center shadow-xl rounded-t-3xl">
 
-        <!-- Title -->
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Phishing Or Legitimate?</h1>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-wide">Phishing Or Legitimate?</h1>
 
-        <!-- Description -->
-        <p class="mb-6 max-w-2xl mx-auto leading-relaxed">
+        <p class="mb-8 max-w-2xl mx-auto leading-relaxed text-purple-100 text-lg">
             Test your ability to spot social engineering tricks. Each question shows a realistic scenario — can you tell what’s safe and what’s suspicious?
         </p>
 
-        <!-- Question Numbers -->
-        <div class="flex justify-center gap-2 mb-6">
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
             @for($i = 1; $i <= $total; $i++)
-                <div class="w-10 h-10 rounded-full flex items-center justify-center
-                            @if($i == $q) bg-white text-purple-700 font-bold @else bg-purple-500 text-white @endif">
+                <div class="w-11 h-11 rounded-full flex items-center justify-center text-sm transition-all duration-300 shadow-sm
+                            @if($i == $q) bg-white text-[#4A0080] font-extrabold scale-110 ring-4 ring-purple-400/50 @else bg-[#6A2C9E] text-white hover:bg-[#7e3bbb] @endif">
                     {{ $i }}
                 </div>
             @endfor
         </div>
 
-        <!-- Answer Buttons -->
-        <div class="flex gap-4 justify-center">
-            <button type="button" id="phishingBtn" class="btn-answer px-6 py-2 rounded bg-red-500 hover:bg-red-600 font-semibold transition">
+        <div class="flex gap-6 justify-center">
+            <button type="button" id="phishingBtn"
+                class="btn-answer px-10 py-3 rounded-full bg-red-500 hover:bg-red-600 font-bold text-lg text-white transition transform hover:scale-105 shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 Phishing
             </button>
-            <button type="button" id="legitBtn" class="btn-answer px-6 py-2 rounded bg-green-500 hover:bg-green-600 font-semibold transition">
+            <button type="button" id="legitBtn"
+                class="btn-answer px-10 py-3 rounded-full bg-green-500 hover:bg-green-600 font-bold text-lg text-white transition transform hover:scale-105 shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 Legitimate
             </button>
         </div>
 
     </div>
 
-    <!-- Image Section -->
-    <div class="bg-white p-6 rounded-b-xl shadow-md mt-0">
-        <div class="max-w-3xl mx-auto">
-            <img src="{{ asset($question['image']) }}" alt="question image" class="w-full border rounded">
+    <div class="bg-white p-8 rounded-b-3xl shadow-xl border-t-0">
+        <div class="max-w-4xl mx-auto shadow-lg rounded-lg overflow-hidden border border-gray-100">
+            <img src="{{ asset($question['image']) }}" alt="question image" class="w-full h-auto object-cover">
         </div>
     </div>
 
 </div>
 
-<!-- Auto-submit JS -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const phishingBtn = document.getElementById('phishingBtn');
@@ -86,3 +83,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endsection
+

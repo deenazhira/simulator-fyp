@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-purple-50 flex flex-col items-center justify-center py-12">
+<div class="min-h-screen bg-[#4A0080] flex flex-col items-center justify-center py-12">
 
     {{-- Back button --}}
     <a href="{{ route('quiz.finish') }}"

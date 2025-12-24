@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-purple-700 py-16 px-4 text-white">
+<div class="min-h-screen bg-[#4A0080] py-16 px-4 text-white">
 
     <!-- Score & Retry -->
     <div class="max-w-4xl mx-auto text-center mb-12">
