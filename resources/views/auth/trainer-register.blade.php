@@ -28,6 +28,13 @@
             </div>
 
             <div class="mb-4">
+                <label class="block text-sm font-semibold mb-1">Company / Department</label>
+                <input name="company_name" value="{{ old('company_name') }}" required
+                       class="w-full border rounded-lg px-4 py-2"
+                       placeholder="e.g. Shell Security Team" />
+            </div>
+
+            <div class="mb-4">
                 <label class="block text-sm font-semibold mb-1">Email</label>
                 <input type="email" name="email" value="{{ old('email') }}" required
                        class="w-full border rounded-lg px-4 py-2" />

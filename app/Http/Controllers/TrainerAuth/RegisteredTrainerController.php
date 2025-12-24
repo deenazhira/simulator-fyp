@@ -3,33 +3,54 @@
 namespace App\Http\Controllers\TrainerAuth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Trainer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\View\View;
 
 class RegisteredTrainerController extends Controller
 {
-    public function create()
+    /**
+     * Display the registration view for Trainers.
+     */
+    public function create(): View
     {
-        return view('auth.trainer-register');
+        return view('auth.trainer-register'); // Matches your blade file name
     }
 
+    /**
+     * Handle an incoming Trainer registration request.
+     */
     public function store(Request $request)
     {
+        // 1. Validate the inputs
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:trainers,email'],
+            'company_name' => ['required', 'string', 'max:255'],
+            // Note: We check uniqueness against the 'user_email' column
+            'email' => ['required', 'email', 'unique:users,user_email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        Trainer::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        // 2. Create the User (Mapping inputs to your DB columns)
+        User::create([
+            'user_name' => $request->name,
+            'user_email' => $request->email,
+            'user_password' => Hash::make($request->password),
+
+            // Hardcode the role for this form
+            'user_role' => 'trainer',
+
+            // Save the company name
+            'company_name' => $request->company_name,
+
+            // Trainers do not have a boss, so this is null
+            'trainer_id' => null,
         ]);
 
-        // For now: redirect to login page (we will do trainer login next)
-        return redirect('/login')->with('success', 'Trainer account created. Please log in.');
+        // 3. Redirect to login
+        return redirect('/login')->with('success', 'Trainer Account created! Please login.');
     }
 }
+
