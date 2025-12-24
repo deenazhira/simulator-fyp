@@ -1,190 +1,225 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Hero Section -->
-<section id="home" class="pt-32 pb-20" style="background-color:#400088;">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6">
 
-        <!-- Left Text -->
-        <div class="md:w-1/2 text-left mb-10 md:mb-0">
+<section id="home" class="relative pt-32 pb-20 overflow-hidden bg-[#4A0080]">
+    <div class="absolute inset-0 bg-gradient-to-br from-[#4A0080] via-[#5D3EFF] to-[#2E0050]"></div>
 
-            <!-- Title -->
-            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6"
-                style="text-shadow: 0 4px 15px rgba(0,0,0,0.45);">
-                <span class="text-white">Phish</span><span style="color:#00E5FF;">Defend</span>
-                <span style="color:#00E5FF;"> AI</span>
+    <div class="absolute top-0 left-0 w-96 h-96 bg-purple-400 rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-cyan-400 rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s"></div>
+
+    <div class="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6 z-10">
+        <div class="md:w-1/2 text-left mb-12 md:mb-0">
+
+            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-white drop-shadow-lg">
+                Phish<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400">Defend</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-pink-300"> AI</span>
             </h1>
-
-
-            <!-- Subtitle -->
-            <p class="text-white text-lg md:text-xl leading-relaxed max-w-xl mb-10">
-                Train Yourself With AI-Based Powered Simulations And Real-Life Scenario
+            <p class="text-gray-100 text-lg md:text-xl leading-relaxed max-w-xl mb-10 opacity-90">
+                Train yourself with AI-powered simulations and real-life scenarios.
+                <span class="text-cyan-300 font-semibold">Detect. Defend. Defeat.</span>
             </p>
 
-            <!-- Buttons -->
-            <div class="flex flex-wrap items-center gap-8">
-
-                <!-- CTA -->
-                <a href="{{ url('/register') }}"
-                    style="background-color:#00E5FF; color:black;"
-                    class="inline-flex items-center justify-center
-                    px-8 py-4 rounded-lg font-semibold
-                    shadow-lg hover:opacity-90 transition">
-                    Create Account
-                </a>
-
-
-
-                <!-- Watch Demo -->
-                <p class="text-white font-medium text-lg">
-                    Watch Demo
-                    <a href="#demo"
-                       class="ml-1 font-semibold underline decoration-2"
-                       style="color:#FFE207;">
-                        Here
+            <div class="flex flex-wrap items-center gap-6">
+                @guest
+                    <a href="{{ url('/register') }}" class="px-8 py-4 bg-cyan-400 text-black rounded-full font-bold text-lg shadow-lg hover:bg-cyan-300 hover:scale-105 transition transform duration-200">
+                        Create Free Account
                     </a>
-                </p>
+                @endguest
+                @auth
+                    <a href="{{ route('dashboard') }}" class="px-8 py-4 bg-cyan-400 text-black rounded-full font-bold text-lg shadow-lg hover:bg-cyan-300 hover:scale-105 transition transform duration-200">
+                        Go to Dashboard
+                    </a>
+                @endauth
 
+                <a href="#demo" class="flex items-center gap-2 text-white font-medium hover:text-cyan-300 transition group">
+                    <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20">
+                        ▶
+                    </span>
+                    Watch Demo
+                </a>
             </div>
         </div>
 
-        <!-- Right Image -->
-        <div class="md:w-1/2 flex justify-center">
-            <img src="{{ asset('images/logo.png') }}"
-                 alt="PhishDefend AI Illustration"
-                 class="w-96 md:w-[460px] drop-shadow-2xl select-none">
+        <div class="md:w-1/2 flex justify-center relative">
+            <img src="{{ asset('images/logo-phish.png') }}" alt="Hero Illustration" class="relative w-full max-w-xl drop-shadow-2xl hover:scale-105 transition duration-500">
         </div>
-
     </div>
 </section>
 
 
-<!-- About Us -->
-<section id="about" class="py-20 bg-gradient-to-r from-purple-50 to-white">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 px-6">
-        <div class="md:w-1/2 flex justify-center">
-            <img src="{{ asset('images/aboutus.png') }}" alt="About PhishDefend AI" class="w-96 md:w-[450px] rounded-lg shadow-lg">
+<section id="about" class="py-24 bg-white relative">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 px-6">
+        <div class="md:w-1/2">
+            <img src="{{ asset('images/aboutus.png') }}" alt="About Us" class="w-full max-w-md mx-auto drop-shadow-2xl hover:-rotate-2 transition duration-500">
         </div>
-        <div class="md:w-1/2 text-left">
-            <h3 class="text-3xl font-bold text-purple-800 mb-4">ABOUT US</h3>
-            <p class="text-gray-700 leading-relaxed mb-4">
-                <strong>PhishDefend AI</strong> is an educational and detection platform designed to raise awareness about phishing attacks.
-                Our mission is to empower users with the tools and knowledge to identify and avoid malicious links, suspicious emails,
-                and cyber threats using AI-driven insights.
+        <div class="md:w-1/2">
+            <h3 class="text-sm font-bold tracking-widest text-purple-600 mb-2 uppercase">Who We Are</h3>
+            <h2 class="text-4xl font-extrabold text-[#4A0080] mb-6">Empowering Your Digital Safety</h2>
+            <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                <strong>PhishDefend AI</strong> isn't just a quiz; it's an intelligent defense platform. We combine machine learning with interactive education to help you identify malicious links before you click.
             </p>
-            <p class="text-gray-700 leading-relaxed">
-                We aim to build a safer digital world by combining intelligent phishing detection with interactive learning — making cybersecurity accessible and engaging for everyone.
-            </p>
+            <ul class="space-y-3 mb-8">
+                <li class="flex items-center text-gray-700">
+                    <span class="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span>
+                    Real-world phishing scenarios
+                </li>
+                <li class="flex items-center text-gray-700">
+                    <span class="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">✓</span>
+                    Instant AI feedback on your choices
+                </li>
+            </ul>
         </div>
     </div>
 </section>
 
-<!-- Video Tutorial -->
-<section id="demo" class="py-20 bg-gradient-to-b from-purple-50 to-white">
-    <div class="max-w-6xl mx-auto text-center px-6">
-        <h3 class="text-3xl font-semibold text-purple-700 mb-10">VIDEO TUTORIAL</h3>
-        <div class="aspect-w-16 aspect-h-9 bg-gray-200 rounded-xl overflow-hidden shadow-lg">
-            <iframe class="w-full h-[500px]" src="https://www.youtube.com/embed/your-video-id" title="PhishDefend AI Demo" frameborder="0" allowfullscreen></iframe>
+
+<section id="demo" class="py-16 bg-[#1a0b2e]">
+    <div class="max-w-4xl mx-auto text-center px-6 relative z-10">
+        <h2 class="text-3xl font-bold text-white mb-4">See It In Action</h2>
+        <p class="text-purple-200 mb-8">Watch how our AI analyzes threats in real-time.</p>
+
+        <div class="rounded-xl overflow-hidden shadow-[0_10px_30px_rgba(8,_112,_184,_0.5)] border border-purple-500/30">
+            <div class="aspect-w-16 aspect-h-9 bg-black">
+                <iframe class="w-full h-[400px]" src="https://www.youtube.com/embed/your-video-id" title="PhishDefend AI Demo" frameborder="0" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- What We Offer -->
-<section id="offer" class="py-20 bg-white">
+
+<section id="offer" class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900">What We Offer</h2>
+            <p class="text-gray-500 mt-4">Tools designed for both beginners and experts.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+            <div class="group p-8 rounded-3xl border border-gray-100 bg-white shadow-xl hover:shadow-2xl hover:border-purple-300 transition duration-300 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full mix-blend-multiply filter blur-2xl opacity-50 transform translate-x-10 -translate-y-10 group-hover:bg-purple-200 transition"></div>
+
+                <div class="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-purple-600/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Simulation Quiz</h3>
+                <p class="text-gray-600 mb-8">Test your skills against realistic emails. Get graded instantly and learn from mistakes.</p>
+                <a href="{{ route('quiz.welcome') }}" class="text-purple-600 font-bold hover:text-purple-800 flex items-center">Start Simulation &rarr;</a>
+            </div>
+
+            <div class="group p-8 rounded-3xl border border-gray-100 bg-white shadow-xl hover:shadow-2xl hover:border-cyan-300 transition duration-300 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-100 rounded-full mix-blend-multiply filter blur-2xl opacity-50 transform translate-x-10 -translate-y-10 group-hover:bg-cyan-200 transition"></div>
+
+                <div class="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-cyan-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">AI Chatbot</h3>
+                <p class="text-gray-600 mb-8">Unsure about a link? Ask our AI. It analyzes patterns to detect fraud instantly.</p>
+                <a href="{{ route('chatbot') }}" class="text-cyan-600 font-bold hover:text-cyan-800 flex items-center">Chat Now &rarr;</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="pricing" class="py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50"></div>
+
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-[#4A0080]">Choose Your Path</h2>
+            <p class="text-gray-500 mt-4">Transparent pricing for everyone.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition duration-300">
+                <span class="bg-gray-100 text-gray-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Individual</span>
+                <div class="mt-4 mb-6">
+                    <span class="text-5xl font-extrabold text-gray-900">Free</span>
+                    <span class="text-gray-400">/ forever</span>
+                </div>
+                <ul class="space-y-4 mb-8 text-gray-600">
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Access to Quizzes</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Basic AI Awareness</li>
+                </ul>
+                @guest
+                    <a href="{{ url('/register') }}" class="block w-full py-4 text-center rounded-xl font-bold text-[#4A0080] bg-purple-50 hover:bg-purple-100 transition">Create Account</a>
+                @else
+                    <button disabled class="block w-full py-4 text-center rounded-xl font-bold text-gray-400 bg-gray-100 cursor-not-allowed">Current Plan</button>
+                @endguest
+            </div>
+
+            <div class="bg-[#4A0080] p-10 rounded-3xl shadow-2xl text-white transform md:scale-105 hover:-translate-y-2 transition duration-300 relative">
+                <div class="absolute top-0 right-0 bg-cyan-400 text-[#4A0080] text-xs font-bold px-4 py-1 rounded-bl-xl rounded-tr-2xl">POPULAR</div>
+                <span class="bg-white/20 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Enterprise</span>
+                <div class="mt-4 mb-6">
+                    <span class="text-5xl font-extrabold">RM250</span>
+                    <span class="text-purple-200">/ mo</span>
+                </div>
+                <ul class="space-y-4 mb-8 text-purple-100">
+                    <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Unlimited AI Chatbot</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Trainer Dashboard</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Team Analytics</li>
+                </ul>
+                <a href="#contact" class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="feedback" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto text-center px-6">
-        <h3 class="text-3xl font-semibold text-purple-700 mb-10">WHAT WE OFFER</h3>
-        <div class="grid md:grid-cols-2 gap-8 justify-center">
-
-            <!-- Simulation Quiz -->
-            <div class="p-8 bg-purple-50 rounded-xl shadow hover:shadow-lg transition">
-                <h4 class="font-bold text-xl text-purple-800 mb-3">Simulation Quiz</h4>
-                <p class="text-gray-700 mb-6">Identify suspicious URLs and emails in real-time and test your phishing awareness.</p>
-                <a href="{{ route('quiz.welcome') }}" class="inline-block bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 transition">Start Quiz</a>
-
-
-            </div>
-
-            <!-- AI Chatbot -->
-            <div class="p-8 bg-purple-50 rounded-xl shadow hover:shadow-lg transition">
-                <h4 class="font-bold text-xl text-purple-800 mb-3">AI Chatbot</h4>
-                <p class="text-gray-700 mb-6">Chat with our AI assistant to learn how to detect fraudulent sender patterns and red flags.</p>
-               <a href="{{ route('chatbot') }}">Chat Now</a>
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Pricing -->
-<section id="pricing" class="py-20 bg-gradient-to-b from-purple-50 to-white">
-    <div class="max-w-7xl mx-auto text-center px-6">
-        <h3 class="text-3xl font-semibold text-purple-700 mb-10">PRICING PLAN</h3>
-        <div class="grid md:grid-cols-2 gap-8">
-
-            <!-- Individual -->
-            <div class="p-8 border rounded-xl shadow hover:shadow-lg transition">
-                <h4 class="text-xl font-bold text-purple-800 mb-3">Individual</h4>
-                <p class="text-gray-600 mb-6">Access to phishing simulation quizzes and AI chatbot support.</p>
-                <p class="text-3xl font-bold text-purple-700 mb-6">FREE</p>
-                <a href="{{ url('/register') }}" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">Get Started</a>
-            </div>
-
-            <!-- Enterprise -->
-            <div class="p-8 border rounded-xl shadow hover:shadow-lg transition">
-                <h4 class="text-xl font-bold text-purple-800 mb-3">Enterprise</h4>
-                <p class="text-gray-600 mb-6">Full suite for organizations — includes user management and reporting tools.</p>
-                <p class="text-3xl font-bold text-purple-700 mb-6">RM250/MONTH</p>
-                <a href="#contact" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">Contact Us</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Feedback -->
-<section id="feedback" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto text-center px-6">
-        <h3 class="text-3xl font-semibold text-purple-700 mb-10">USER FEEDBACK</h3>
+        <h3 class="text-3xl font-bold text-gray-900 mb-12">User Feedback</h3>
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-purple-50 p-6 rounded-xl shadow">
-                <p class="italic text-gray-700 mb-4">"This tool really improved my awareness! The quiz is both fun and informative."</p>
+            <div class="bg-purple-100 p-8 rounded-2xl shadow-sm hover:shadow-md hover:bg-purple-200 transition border border-purple-200">
+                <div class="flex text-yellow-500 justify-center mb-4">★★★★★</div>
+                <p class="italic text-purple-900 mb-6">"This tool really improved my awareness! The quiz is both fun and informative."</p>
                 <h4 class="font-bold text-purple-800">— Sarah, Student</h4>
             </div>
-            <div class="bg-purple-50 p-6 rounded-xl shadow">
-                <p class="italic text-gray-700 mb-4">"The AI chatbot helped me understand phishing patterns easily."</p>
+
+            <div class="bg-purple-100 p-8 rounded-2xl shadow-sm hover:shadow-md hover:bg-purple-200 transition border border-purple-200">
+                <div class="flex text-yellow-500 justify-center mb-4">★★★★★</div>
+                <p class="italic text-purple-900 mb-6">"The AI chatbot helped me understand phishing patterns easily. Highly recommended!"</p>
                 <h4 class="font-bold text-purple-800">— Amir, IT Officer</h4>
             </div>
-            <div class="bg-purple-50 p-6 rounded-xl shadow">
-                <p class="italic text-gray-700 mb-4">"A great initiative for cybersecurity awareness. Very user-friendly!"</p>
+
+            <div class="bg-purple-100 p-8 rounded-2xl shadow-sm hover:shadow-md hover:bg-purple-200 transition border border-purple-200">
+                <div class="flex text-yellow-500 justify-center mb-4">★★★★☆</div>
+                <p class="italic text-purple-900 mb-6">"A great initiative for cybersecurity awareness. Very user-friendly and modern."</p>
                 <h4 class="font-bold text-purple-800">— Aina, Educator</h4>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="bg-purple-900 text-white py-10">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
+
+<footer class="bg-[#1a0b2e] text-white py-12 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 text-center md:text-left">
         <div>
-            <h4 class="font-bold text-lg mb-3">PhishDefend AI</h4>
-            <p class="text-gray-300">Empowering users to stay safe online through AI-powered phishing awareness and education.</p>
+            <h4 class="font-bold text-2xl mb-4 tracking-wide">Phish<span class="text-cyan-400">Defend</span></h4>
+            <p class="text-gray-400 text-sm leading-relaxed">
+                Empowering organizations and individuals to stay safe online through advanced AI-powered detection and education.
+            </p>
         </div>
         <div>
-            <h4 class="font-bold text-lg mb-3">Quick Links</h4>
-            <ul class="space-y-2">
-                <li><a href="#home" class="hover:text-yellow-400 transition">Home</a></li>
-                <li><a href="#about" class="hover:text-yellow-400 transition">About</a></li>
-                <li><a href="#pricing" class="hover:text-yellow-400 transition">Pricing</a></li>
-                <li><a href="#feedback" class="hover:text-yellow-400 transition">Feedback</a></li>
+            <h4 class="font-bold text-lg mb-4 text-purple-300">Platform</h4>
+            <ul class="space-y-2 text-gray-400 text-sm">
+                <li><a href="{{ route('home') }}" class="hover:text-white transition">Home</a></li>
+                <li><a href="{{ route('quiz.welcome') }}" class="hover:text-white transition">Simulator</a></li>
+                <li><a href="{{ route('chatbot') }}" class="hover:text-white transition">AI Chatbot</a></li>
             </ul>
         </div>
         <div>
-            <h4 class="font-bold text-lg mb-3">Contact</h4>
-            <p class="text-gray-300">Email: support@phishdefend.ai</p>
-            <p class="text-gray-300">Phone: +60 12-345 6789</p>
+            <h4 class="font-bold text-lg mb-4 text-purple-300">Contact</h4>
+            <p class="text-gray-400 text-sm">support@phishdefend.ai</p>
+            <p class="text-gray-400 text-sm">+60 12-345 6789</p>
         </div>
     </div>
-    <div class="text-center text-gray-400 mt-10 border-t border-purple-700 pt-6">
+    <div class="text-center text-gray-600 mt-12 pt-8 text-xs">
         © 2025 PhishDefend AI. All rights reserved.
     </div>
 </footer>
+
 @endsection
+
