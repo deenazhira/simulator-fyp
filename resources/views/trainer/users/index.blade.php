@@ -78,7 +78,7 @@
 
                             <td class="p-5 text-right">
                                 <a href="#" class="text-cyan-500 border border-cyan-200 px-4 py-1 rounded hover:bg-cyan-50 hover:border-cyan-500 transition text-sm font-medium">
-                                    User Activity
+                                    User Activity href="{{ route('trainer.users.show', $user['id']) }}"
                                 </a>
                             </td>
                         </tr>

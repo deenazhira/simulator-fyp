@@ -86,9 +86,11 @@ Route::middleware(['auth'])->group(function () {
     // Existing Dashboard Route
     Route::get('/trainer/dashboard', [TrainerDashboardController::class, 'index'])->name('trainer.dashboard');
 
-    // ✅ NEW: Manage Users Routes
+    //Manage Users Routes
     Route::get('/trainer/users', [TrainerUserController::class, 'index'])->name('trainer.users.index');
     Route::delete('/trainer/users/{id}', [TrainerUserController::class, 'destroy'])->name('trainer.users.remove');
 
+    //View Specific User Activity
+Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
 });
 

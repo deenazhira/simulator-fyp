@@ -47,5 +47,41 @@ class TrainerUserController extends Controller
 
         return back()->with('success', 'User removed from your team.');
     }
+
+    // 3. Show a specific user's activity (Profile & History)
+    public function show($id)
+    {
+        // Find the user
+        $user = User::findOrFail($id);
+
+        // Security Check: Ensure this user belongs to the logged-in trainer
+        if($user->trainer_id !== Auth::user()->user_id) {
+            return redirect()->route('trainer.users.index')->with('error', 'Unauthorized access.');
+        }
+
+        // Fetch Quiz Results (using the table we just created)
+        $quizResults = \DB::table('quiz_results')
+                        ->where('user_id', $user->user_id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        // Calculate Stats
+        $totalQuizzes = $quizResults->count();
+        $avgScore = $quizResults->avg('score') ?? 0;
+
+        // Determine Risk based on average
+        $riskStatus = 'Medium';
+        $riskColor = 'text-yellow-600 bg-yellow-100';
+
+        if ($avgScore >= 80) {
+            $riskStatus = 'Low Risk';
+            $riskColor = 'text-green-600 bg-green-100';
+        } elseif ($avgScore < 50 && $totalQuizzes > 0) {
+            $riskStatus = 'High Risk';
+            $riskColor = 'text-red-600 bg-red-100';
+        }
+
+        return view('trainer.users.show', compact('user', 'quizResults', 'avgScore', 'totalQuizzes', 'riskStatus', 'riskColor'));
+    }
 }
 

@@ -97,7 +97,7 @@
                                 @endif
                             </td>
                             <td class="p-6 text-right">
-                                <a href="#" class="text-[#651FFF] border border-[#651FFF] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#651FFF] hover:text-white transition">
+                                <a href="{{ route('trainer.users.show', $stat['id']) }}" class="text-[#651FFF] border border-[#651FFF] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#651FFF] hover:text-white transition">
                                     User Activity
                                 </a>
                             </td>
