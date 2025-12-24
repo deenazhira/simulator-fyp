@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;   // ✅ Added for Database
+use Illuminate\Support\Facades\Auth; // ✅ Added for Auth Check
 
 class QuizController extends Controller
 {
@@ -77,6 +79,8 @@ class QuizController extends Controller
     // ===============================
     public function welcome()
     {
+        // Optional: Clear session on welcome to start fresh
+        session()->forget(['quiz_answers', 'quiz_results']);
         return view('quiz/quiz-welcome');
     }
 
@@ -114,7 +118,7 @@ class QuizController extends Controller
     }
 
     // ===============================
-    // FINISH PAGE
+    // FINISH PAGE (UPDATED WITH DB SAVE)
     // ===============================
     public function finish()
     {
@@ -143,6 +147,20 @@ class QuizController extends Controller
         session(['quiz_results' => $results]); // store results for feedback view
 
         $total = count($questions);
+
+        // ✅ NEW: CALCULATE PERCENTAGE & SAVE TO DATABASE
+        // This ensures the Trainer Dashboard gets the data
+        if (Auth::check()) {
+            $percentage = ($total > 0) ? round(($score / $total) * 100) : 0;
+
+            DB::table('quiz_results')->insert([
+                'user_id' => Auth::user()->user_id, // Matches your custom user_id
+                'score' => $percentage,
+                'total_questions' => $total,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         return view('quiz/quiz-finish', [
             'results' => $results,
@@ -174,6 +192,7 @@ class QuizController extends Controller
             1 => [
                 ['x'=>20, 'y'=>35, 'w'=>50, 'h'=>20, 'label'=>'Hidden URL'],
             ],
+            // You can add more annotations for other questions here if needed
         ];
 
         $annotations = $annotationsPerQuestion[$index] ?? [];
@@ -185,3 +204,4 @@ class QuizController extends Controller
         ]);
     }
 }
+
