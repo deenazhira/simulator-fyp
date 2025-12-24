@@ -19,9 +19,10 @@
             <p class="text-gray-600 mb-8">Upgrade to the Enterprise Plan to practice detecting real-time phishing threats with our AI simulator.</p>
 
             <div class="space-y-4">
-                <a href="#pricing" class="block w-full py-3 bg-[#4A0080] text-white text-center rounded-xl font-bold hover:opacity-90 transition shadow-lg">
+                <a href="{{ route('home') }}#pricing" class="block w-full py-3 bg-[#4A0080] text-white text-center rounded-xl font-bold hover:opacity-90 transition shadow-lg">
                     Upgrade Now
                 </a>
+
                 <a href="{{ route('home') }}" class="block w-full py-3 bg-gray-100 text-gray-700 text-center rounded-xl font-semibold hover:bg-gray-200 transition">
                     Return Home
                 </a>
