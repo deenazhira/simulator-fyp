@@ -27,19 +27,43 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    // In App\Http\Controllers\Auth\RegisteredUserController.php
+
+public function store(Request $request)
 {
+    // 1. Validate (Note: user_name matching your DB column names)
     $request->validate([
-        'name' => ['required','string','max:255'],
-        'email' => ['required','email','unique:users,email'],
-        'password' => ['required','confirmed', Rules\Password::defaults()],
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'unique:users,user_email'],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        'trainer_email' => ['nullable', 'email', 'exists:users,user_email'], // Check if trainer exists
     ]);
 
+    // 2. Logic to Find Trainer
+    $role = 'public';
+    $trainerId = null;
+
+    if ($request->filled('trainer_email')) {
+        // Find the trainer by email
+        $trainer = User::where('user_email', $request->trainer_email)
+                       ->where('user_role', 'trainer')
+                       ->first();
+
+        if ($trainer) {
+            $role = 'enterprise'; // They become 'Enterprise/Staff' status
+            $trainerId = $trainer->user_id;
+        }
+    }
+
+    // 3. Create User
     User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
+        'user_name' => $request->name,
+        'user_email' => $request->email,
+        'user_password' => Hash::make($request->password),
+        'user_role' => $role,      // 'public' or 'enterprise'
+        'trainer_id' => $trainerId, // Linked ID or NULL
     ]);
 
-    return redirect('/login')->with('success', 'Account created successfully.');
-}}
+    return redirect('/login')->with('success', 'Account created successfully. Please login.');
+}
+}
