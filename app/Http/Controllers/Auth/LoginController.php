@@ -44,7 +44,7 @@ class LoginController extends Controller
                 return redirect()->intended('dashboard'); // Trainer Dashboard
             }
 
-            return redirect()->intended('home'); // Normal User Home
+            return redirect()->intended(route('home')); // Normal User Home
         }
 
         // 4. Login Failed
