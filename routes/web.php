@@ -9,6 +9,7 @@ use App\Http\Controllers\TrainerAuth\RegisteredTrainerController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TrainerDashboardController;
 use App\Http\Controllers\TrainerUserController;
+use App\Http\Controllers\TrainerFeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,4 +94,8 @@ Route::middleware(['auth'])->group(function () {
     //View Specific User Activity
 Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
 });
+
+// Feedback Routes
+Route::get('/trainer/feedback/create/{quiz_result_id}', [TrainerFeedbackController::class, 'create'])->name('trainer.feedback.create');
+Route::post('/trainer/feedback', [TrainerFeedbackController::class, 'store'])->name('trainer.feedback.store');
 

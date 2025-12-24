@@ -79,7 +79,7 @@
                             @endif
                         </td>
                         <td class="p-5 text-right">
-                            <a href="#" class="text-white bg-[#651FFF] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 shadow-sm">
+                            <a href="{{ route('trainer.feedback.create', $result->id) }}" class="text-white bg-[#651FFF] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 shadow-sm">
                                 Give Feedback
                             </a>
                         </td>
