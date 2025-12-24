@@ -63,7 +63,7 @@
 <section id="about" class="py-20 bg-gradient-to-r from-purple-50 to-white">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10 px-6">
         <div class="md:w-1/2 flex justify-center">
-            <img src="{{ asset('images/about-us.svg') }}" alt="About PhishDefend AI" class="w-96 md:w-[450px] rounded-lg shadow-lg">
+            <img src="{{ asset('images/aboutus.png') }}" alt="About PhishDefend AI" class="w-96 md:w-[450px] rounded-lg shadow-lg">
         </div>
         <div class="md:w-1/2 text-left">
             <h3 class="text-3xl font-bold text-purple-800 mb-4">ABOUT US</h3>
