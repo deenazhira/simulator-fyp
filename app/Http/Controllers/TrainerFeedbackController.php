@@ -53,5 +53,35 @@ class TrainerFeedbackController extends Controller
         return redirect()->route('trainer.users.show', $request->user_id)
                          ->with('success', 'Feedback submitted successfully!');
     }
+
+    // 0. Show the list of all feedbacks (Pending & Completed)
+    public function index()
+    {
+        $trainerId = Auth::user()->user_id;
+
+        // 1. Get IDs of all students belonging to this trainer
+        $studentIds = User::where('trainer_id', $trainerId)->pluck('user_id');
+
+        // 2. Get all Quiz Results for these students
+        // We do a Left Join to check if feedback already exists for each result
+        $attempts = DB::table('quiz_results')
+            ->join('users', 'quiz_results.user_id', '=', 'users.user_id')
+            ->leftJoin('trainer_feedback', 'quiz_results.id', '=', 'trainer_feedback.quiz_result_id')
+            ->whereIn('quiz_results.user_id', $studentIds)
+            ->select(
+                'quiz_results.id as result_id',
+                'quiz_results.score',
+                'quiz_results.created_at as quiz_date',
+                'users.user_name',
+                'users.user_email',
+                'users.user_id',
+                'trainer_feedback.id as feedback_id', // If this is NOT null, feedback exists
+                'trainer_feedback.created_at as feedback_date'
+            )
+            ->orderBy('quiz_results.created_at', 'desc')
+            ->get();
+
+        return view('trainer.feedback.index', compact('attempts'));
+    }
 }
 

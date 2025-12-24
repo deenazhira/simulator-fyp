@@ -19,7 +19,8 @@
                         Dashboard
                     </a>
 
-                    <a href="{{ route('home') }}#feedback" class="hover:text-[#651FFF] transition">
+                    <a href="{{ route('trainer.feedback.index') }}"
+                       class="hover:text-[#651FFF] transition {{ request()->routeIs('trainer.feedback.index') ? 'text-[#651FFF] font-semibold' : '' }}">
                         Feedback
                     </a>
 

@@ -92,7 +92,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/trainer/users/{id}', [TrainerUserController::class, 'destroy'])->name('trainer.users.remove');
 
     //View Specific User Activity
-Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
+    Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
+
+    // Feedback Index (The List)
+Route::get('/trainer/feedbacks', [TrainerFeedbackController::class, 'index'])->name('trainer.feedback.index');
 });
 
 // Feedback Routes
