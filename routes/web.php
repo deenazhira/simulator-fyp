@@ -6,6 +6,7 @@ use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TrainerAuth\RegisteredTrainerController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\TrainerDashboardController;
 
 Route::get('/', function () {
     return view('home');
@@ -48,3 +49,11 @@ Route::get('/register', function () {
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+//dashboard
+// Group routes that require 'auth' AND 'trainer' role check
+Route::middleware(['auth'])->group(function () {
+    // Add a check in your controller or middleware to ensure only 'trainer' role accesses this
+    Route::get('/trainer/dashboard', [TrainerDashboardController::class, 'index'])->name('trainer.dashboard');
+});
+
