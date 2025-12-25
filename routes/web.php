@@ -85,10 +85,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/trainer/dashboard', [TrainerDashboardController::class, 'index'])->name('trainer.dashboard');
 
+        //Manage user
         Route::get('/trainer/users', [TrainerUserController::class, 'index'])->name('trainer.users.index');
         Route::delete('/trainer/users/{id}', [TrainerUserController::class, 'destroy'])->name('trainer.users.remove');
         Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
 
+        //Manage feedback
         Route::get('/trainer/feedbacks', [TrainerFeedbackController::class, 'index'])->name('trainer.feedback.index');
         Route::get('/trainer/feedback/create/{quiz_result_id}', [TrainerFeedbackController::class, 'create'])->name('trainer.feedback.create');
         Route::post('/trainer/feedback', [TrainerFeedbackController::class, 'store'])->name('trainer.feedback.store');
