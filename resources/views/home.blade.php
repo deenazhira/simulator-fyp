@@ -2,6 +2,7 @@
 
 @section('content')
 
+{{-- HERO SECTION --}}
 <section id="home" class="relative pt-32 pb-20 overflow-hidden bg-[#4A0080]">
     <div class="absolute inset-0 bg-gradient-to-br from-[#4A0080] via-[#5D3EFF] to-[#2E0050]"></div>
 
@@ -29,12 +30,12 @@
 
                 @auth
                     @if(Auth::user()->user_role === 'trainer')
-                    {{-- Trainers still need the Dashboard --}}
+                    {{-- Trainers go to Dashboard --}}
                     <a href="{{ route('dashboard') }}" class="px-8 py-4 bg-cyan-400 text-black rounded-full font-bold text-lg shadow-lg hover:bg-cyan-300 hover:scale-105 transition transform duration-200">
                         Go to Dashboard
                     </a>
                     @else
-                    {{-- ✅ FREE USERS: Change "Go to Dashboard" to "Go to Simulator" --}}
+                    {{-- PUBLIC / ENTERPRISE STAFF: Go to Simulator --}}
                     <a href="{{ route('quiz.welcome') }}" class="px-8 py-4 bg-cyan-400 text-black rounded-full font-bold text-lg shadow-lg hover:bg-cyan-300 hover:scale-105 transition transform duration-200">
                         Go to Simulator
                     </a>
@@ -56,7 +57,7 @@
     </div>
 </section>
 
-
+{{-- ABOUT SECTION --}}
 <section id="about" class="py-24 bg-white relative">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 px-6">
         <div class="md:w-1/2">
@@ -82,7 +83,7 @@
     </div>
 </section>
 
-
+{{-- DEMO SECTION --}}
 <section id="demo" class="py-16 bg-[#1a0b2e]">
     <div class="max-w-4xl mx-auto text-center px-6 relative z-10">
         <h2 class="text-3xl font-bold text-white mb-4">See It In Action</h2>
@@ -96,7 +97,7 @@
     </div>
 </section>
 
-
+{{-- OFFER SECTION --}}
 <section id="offer" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-16">
@@ -107,7 +108,6 @@
         <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
             <div class="group p-8 rounded-3xl border border-gray-100 bg-white shadow-xl hover:shadow-2xl hover:border-purple-300 transition duration-300 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full mix-blend-multiply filter blur-2xl opacity-50 transform translate-x-10 -translate-y-10 group-hover:bg-purple-200 transition"></div>
-
                 <div class="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-purple-600/30">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
@@ -118,7 +118,6 @@
 
             <div class="group p-8 rounded-3xl border border-gray-100 bg-white shadow-xl hover:shadow-2xl hover:border-cyan-300 transition duration-300 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-100 rounded-full mix-blend-multiply filter blur-2xl opacity-50 transform translate-x-10 -translate-y-10 group-hover:bg-cyan-200 transition"></div>
-
                 <div class="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-cyan-500/30">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                 </div>
@@ -130,7 +129,7 @@
     </div>
 </section>
 
-
+{{-- PRICING SECTION --}}
 <section id="pricing" class="py-24 relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50"></div>
 
@@ -141,43 +140,72 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div class="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition duration-300">
-                <span class="bg-gray-100 text-gray-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Individual</span>
+
+            {{-- CARD 1: INDIVIDUAL / FREE --}}
+            <div class="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition duration-300 flex flex-col">
+                <span class="bg-gray-100 text-gray-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide w-fit">Individual</span>
                 <div class="mt-4 mb-6">
                     <span class="text-5xl font-extrabold text-gray-900">Free</span>
                     <span class="text-gray-400">/ forever</span>
                 </div>
-                <ul class="space-y-4 mb-8 text-gray-600">
+                <ul class="space-y-4 mb-8 text-gray-600 flex-grow">
                     <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Access to Quizzes</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Cybersecurity Awareness</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Basic AI Awareness</li>
                 </ul>
+
+                {{-- BUTTON LOGIC: FREE PLAN --}}
                 @guest
                     <a href="{{ url('/register') }}" class="block w-full py-4 text-center rounded-xl font-bold text-[#4A0080] bg-purple-50 hover:bg-purple-100 transition">Create Account</a>
                 @else
-                    <button disabled class="block w-full py-4 text-center rounded-xl font-bold text-gray-400 bg-gray-100 cursor-not-allowed">Current Plan</button>
+                    @if(Auth::user()->user_role === 'public')
+                        {{-- Public Users --}}
+                        <button disabled class="block w-full py-4 text-center rounded-xl font-bold text-gray-500 bg-gray-200 cursor-not-allowed">Current Plan</button>
+                    @else
+                        {{-- Trainers / Enterprise Staff (Included but not main plan) --}}
+                        <button disabled class="block w-full py-4 text-center rounded-xl font-bold text-gray-400 bg-gray-100 cursor-not-allowed">Included</button>
+                    @endif
                 @endguest
             </div>
 
-            <div class="bg-[#4A0080] p-10 rounded-3xl shadow-2xl text-white transform md:scale-105 hover:-translate-y-2 transition duration-300 relative">
+            {{-- CARD 2: ENTERPRISE / RM250 --}}
+            <div class="bg-[#4A0080] p-10 rounded-3xl shadow-2xl text-white transform md:scale-105 hover:-translate-y-2 transition duration-300 relative flex flex-col">
                 <div class="absolute top-0 right-0 bg-cyan-400 text-[#4A0080] text-xs font-bold px-4 py-1 rounded-bl-xl rounded-tr-2xl">POPULAR</div>
-                <span class="bg-white/20 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Enterprise</span>
+                <span class="bg-white/20 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide w-fit">Enterprise</span>
                 <div class="mt-4 mb-6">
                     <span class="text-5xl font-extrabold">RM250</span>
                     <span class="text-purple-200">/ mo</span>
                 </div>
-                <ul class="space-y-4 mb-8 text-purple-100">
+                <ul class="space-y-4 mb-8 text-purple-100 flex-grow">
                     <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Access to Quizzes</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Unlimited AI Chatbot</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Trainer & User Dashboard</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Team Analytics</li>
                 </ul>
-                <a href="#contact" class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">Contact Sales</a>
+
+                {{-- BUTTON LOGIC: ENTERPRISE PLAN --}}
+                @auth
+                    {{-- Check for 'trainer' OR 'enterprise' role --}}
+                    @if(Auth::user()->user_role === 'trainer' || Auth::user()->user_role === 'enterprise')
+
+                        {{-- ✅ FIXED: Removed '/90' opacity and icon to prevent visibility issues --}}
+                        <button disabled class="block w-full py-4 text-center rounded-xl font-bold text-[#4A0080] bg-cyan-400 cursor-default">
+                            Active Plan
+                        </button>
+
+                    @else
+                        {{-- Public Users see Contact Sales --}}
+                        <a href="#contact" class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">Contact Sales</a>
+                    @endif
+                @else
+                    {{-- Guests see Contact Sales --}}
+                    <a href="#contact" class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">Contact Sales</a>
+                @endauth
             </div>
         </div>
     </div>
 </section>
 
-
+{{-- FEEDBACK SECTION --}}
 <section id="feedback" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto text-center px-6">
         <h3 class="text-3xl font-bold text-gray-900 mb-12">Past Feedbacks</h3>
@@ -203,7 +231,7 @@
     </div>
 </section>
 
-
+{{-- FOOTER --}}
 <footer class="bg-[#1a0b2e] text-white py-12 border-t border-white/5">
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 text-center md:text-left">
         <div>
