@@ -12,99 +12,87 @@ use App\Http\Controllers\TrainerUserController;
 use App\Http\Controllers\TrainerFeedbackController;
 use App\Http\Controllers\UserFeedbackController;
 
+// ✅ IMPORTANT: Import the new middleware here
+use App\Http\Middleware\EnsureTrainer;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
 
-// 1. Home Route
+// 1. PUBLIC ROUTES
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// 2. Authentication Routes
-// Login
-Route::get('/login', [LoginController::class, 'create'])->name('login');
-Route::post('/login', [LoginController::class, 'store']);
-Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-
-// Registration Selection
-Route::get('/register', function () {
-    return view('auth.register-choose');
-})->name('register.choose');
-
-// User Registration
-Route::get('/register/user', [RegisteredUserController::class, 'create'])->name('register.user');
-Route::post('/register/user', [RegisteredUserController::class, 'store']);
-
-// Trainer Registration
-Route::get('/register/trainer', [RegisteredTrainerController::class, 'create'])->name('register.trainer');
-Route::post('/register/trainer', [RegisteredTrainerController::class, 'store']);
-
-
-// 3. SMART DASHBOARD ROUTE (Crucial Logic)
-// This handles the redirection: Trainer -> Trainer Dashboard, User -> User Dashboard
-Route::get('/dashboard', function () {
-
-    // Safety check: ensure user is actually logged in (though middleware handles this)
-    if (!Auth::check()) {
-        return redirect()->route('login');
-    }
-
-    // If Trainer -> Show the Trainer Dashboard Controller
-    if (Auth::user()->user_role === 'trainer') {
-        return app(TrainerDashboardController::class)->index();
-    }
-
-    // If Normal User -> Show the default user dashboard view
-    return view('dashboard');
-
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-
-// 4. Feature Routes
-// Quiz
-Route::get('/quiz', [QuizController::class, 'welcome'])->name('quiz.welcome');
-Route::get('/quiz/start/{q?}', [QuizController::class, 'showQuestion'])->name('quiz.start');
-Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz.answer');
-Route::get('/quiz/finish', [QuizController::class, 'finish'])->name('quiz.finish');
-Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('quiz.result');
-
-// Chatbot
-Route::get('/chat', [ChatbotController::class, 'index'])->name('chatbot');
-Route::post('/chatbot/message', [ChatbotController::class, 'send'])->name('chatbot.message');
-
-// Awareness
 Route::get('/awareness', function () {
     return view('awareness');
 })->name('awareness');
 
+// Authentication
+Route::get('/login', [LoginController::class, 'create'])->name('login');
+Route::post('/login', [LoginController::class, 'store']);
+Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
-// 5. Specific Trainer Routes
-// Allows direct access to trainer specific pages if needed
+// Registration
+Route::get('/register', function () {
+    return view('auth.register-choose');
+})->name('register.choose');
+
+Route::get('/register/user', [RegisteredUserController::class, 'create'])->name('register.user');
+Route::post('/register/user', [RegisteredUserController::class, 'store']);
+
+Route::get('/register/trainer', [RegisteredTrainerController::class, 'create'])->name('register.trainer');
+Route::post('/register/trainer', [RegisteredTrainerController::class, 'store']);
+
+
+// 2. PROTECTED ROUTES (Must be Logged In)
 Route::middleware(['auth'])->group(function () {
 
-    // Existing Dashboard Route
-    Route::get('/trainer/dashboard', [TrainerDashboardController::class, 'index'])->name('trainer.dashboard');
+    // Dashboard Logic
+    Route::get('/dashboard', function () {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        if (Auth::user()->user_role === 'trainer') {
+            return app(TrainerDashboardController::class)->index();
+        }
+        return view('dashboard');
+    })->middleware(['verified'])->name('dashboard');
 
-    //Manage Users Routes
-    Route::get('/trainer/users', [TrainerUserController::class, 'index'])->name('trainer.users.index');
-    Route::delete('/trainer/users/{id}', [TrainerUserController::class, 'destroy'])->name('trainer.users.remove');
 
-    //View Specific User Activity
-    Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
+    // Quiz Routes
+    Route::get('/quiz', [QuizController::class, 'welcome'])->name('quiz.welcome');
+    Route::get('/quiz/start/{q?}', [QuizController::class, 'showQuestion'])->name('quiz.start');
+    Route::post('/quiz/answer', [QuizController::class, 'answer'])->name('phish.quiz.answer');
+    Route::get('/quiz/finish', [QuizController::class, 'finish'])->name('quiz.finish');
+    Route::get('/quiz/result/{id}', [QuizController::class, 'showResult'])->name('quiz.result');
 
-    // Feedback Index (The List)
-    Route::get('/trainer/feedbacks', [TrainerFeedbackController::class, 'index'])->name('trainer.feedback.index');
 
-    // User View Feedback
+    // Chatbot Routes
+    Route::get('/chat', [ChatbotController::class, 'index'])->name('chatbot');
+    Route::post('/chatbot/message', [ChatbotController::class, 'send'])->name('chatbot.message');
+
+
+    // Feedback Routes (User)
     Route::get('/my-feedback', [UserFeedbackController::class, 'index'])->name('user.feedback.index');
 
 
-});
+    // --- TRAINER SPECIFIC ROUTES ---
+    // ✅ FIX: Use 'EnsureTrainer::class' here instead of a function
+    Route::middleware(EnsureTrainer::class)->group(function () {
 
-// Feedback Routes
-Route::get('/trainer/feedback/create/{quiz_result_id}', [TrainerFeedbackController::class, 'create'])->name('trainer.feedback.create');
-Route::post('/trainer/feedback', [TrainerFeedbackController::class, 'store'])->name('trainer.feedback.store');
+        Route::get('/trainer/dashboard', [TrainerDashboardController::class, 'index'])->name('trainer.dashboard');
+
+        Route::get('/trainer/users', [TrainerUserController::class, 'index'])->name('trainer.users.index');
+        Route::delete('/trainer/users/{id}', [TrainerUserController::class, 'destroy'])->name('trainer.users.remove');
+        Route::get('/trainer/users/{id}', [TrainerUserController::class, 'show'])->name('trainer.users.show');
+
+        Route::get('/trainer/feedbacks', [TrainerFeedbackController::class, 'index'])->name('trainer.feedback.index');
+        Route::get('/trainer/feedback/create/{quiz_result_id}', [TrainerFeedbackController::class, 'create'])->name('trainer.feedback.create');
+        Route::post('/trainer/feedback', [TrainerFeedbackController::class, 'store'])->name('trainer.feedback.store');
+    });
+
+});
 
