@@ -149,7 +149,7 @@
                 </div>
                 <ul class="space-y-4 mb-8 text-gray-600">
                     <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Access to Quizzes</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Basic AI Awareness</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Cybersecurity Awareness</li>
                 </ul>
                 @guest
                     <a href="{{ url('/register') }}" class="block w-full py-4 text-center rounded-xl font-bold text-[#4A0080] bg-purple-50 hover:bg-purple-100 transition">Create Account</a>
@@ -166,8 +166,9 @@
                     <span class="text-purple-200">/ mo</span>
                 </div>
                 <ul class="space-y-4 mb-8 text-purple-100">
+                    <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Access to Quizzes</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Unlimited AI Chatbot</li>
-                    <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Trainer Dashboard</li>
+                    <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Trainer & User Dashboard</li>
                     <li class="flex items-center"><svg class="w-5 h-5 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Team Analytics</li>
                 </ul>
                 <a href="#contact" class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">Contact Sales</a>

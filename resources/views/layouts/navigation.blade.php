@@ -2,17 +2,15 @@
     <div class="max-w-7xl mx-auto px-8">
         <div class="h-20 flex items-center justify-between">
 
-            <a href="{{ route('home') }}" class="text-3xl md:text-[32px] font-extrabold tracking-tight">
+            {{-- LOGO: Redirects Trainers to Dashboard, Everyone else to Home --}}
+            <a href="{{ (Auth::check() && Auth::user()->user_role === 'trainer') ? route('dashboard') : route('home') }}"
+               class="text-3xl md:text-[32px] font-extrabold tracking-tight">
                 <span style="color:#651FFF;">Phish</span><span style="color:#AF00E4;">Defend</span><span style="color:#AF00E4;"> AI</span>
             </a>
 
             <div class="flex items-center gap-10 text-lg font-medium text-gray-700">
 
-                <a href="{{ route('home') }}"
-                   class="hover:text-[#651FFF] transition {{ request()->routeIs('home') ? 'text-[#651FFF] font-semibold' : '' }}">
-                    Home
-                </a>
-
+                {{-- TRAINER MENU (No Home Link) --}}
                 @if(Auth::check() && Auth::user()->user_role === 'trainer')
                     <a href="{{ route('dashboard') }}"
                        class="hover:text-[#651FFF] transition {{ request()->routeIs('dashboard') ? 'text-[#651FFF] font-semibold' : '' }}">
@@ -29,7 +27,14 @@
                         Awareness
                     </a>
 
+                {{-- PUBLIC & GUEST MENU (Has Home Link) --}}
                 @else
+                    {{-- Home Link is here now, so Trainers won't see it --}}
+                    <a href="{{ route('home') }}"
+                       class="hover:text-[#651FFF] transition {{ request()->routeIs('home') ? 'text-[#651FFF] font-semibold' : '' }}">
+                        Home
+                    </a>
+
                     <a href="{{ route('quiz.welcome') }}"
                        class="hover:text-[#651FFF] transition {{ request()->routeIs('quiz.*') ? 'text-[#651FFF] font-semibold' : '' }}">
                         Simulator
