@@ -11,6 +11,8 @@ use App\Http\Controllers\TrainerDashboardController;
 use App\Http\Controllers\TrainerUserController;
 use App\Http\Controllers\TrainerFeedbackController;
 use App\Http\Controllers\UserFeedbackController;
+use App\Http\Controllers\ContactSalesController;
+
 
 // ✅ IMPORTANT: Import the new middleware here
 use App\Http\Middleware\EnsureTrainer;
@@ -45,6 +47,10 @@ Route::post('/register/user', [RegisteredUserController::class, 'store']);
 
 Route::get('/register/trainer', [RegisteredTrainerController::class, 'create'])->name('register.trainer');
 Route::post('/register/trainer', [RegisteredTrainerController::class, 'store']);
+// Contact Sales (Public)
+Route::get('/contact-sales', [ContactSalesController::class, 'create'])->name('contact.sales');
+Route::post('/contact-sales', [ContactSalesController::class, 'store'])->name('contact.sales.store');
+Route::get('/contact-sales/thanks', [ContactSalesController::class, 'thanks'])->name('contact.sales.thanks');
 
 
 // 2. PROTECTED ROUTES (Must be Logged In)

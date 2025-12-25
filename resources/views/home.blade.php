@@ -194,12 +194,18 @@
 
                     @else
                         {{-- Public Users see Contact Sales --}}
-                        <a href="#contact" class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">Contact Sales</a>
+                        <a href="{{ route('contact.sales') }}"
+                        class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">
+                        Contact Sales
+                        </a>
+
                     @endif
                 @else
                     {{-- Guests see Contact Sales --}}
-                    <a href="#contact" class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">Contact Sales</a>
-                @endauth
+                        <a href="{{ route('contact.sales') }}"
+                        class="block w-full py-4 text-center rounded-xl font-bold text-black bg-cyan-400 hover:bg-cyan-300 transition shadow-[0_0_20px_rgba(34,211,238,0.5)]">
+                        Contact Sales
+                        </a>                @endauth
             </div>
         </div>
     </div>
