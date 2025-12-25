@@ -26,10 +26,19 @@
                         Create Free Account
                     </a>
                 @endguest
+
                 @auth
+                    @if(Auth::user()->user_role === 'trainer')
+                    {{-- Trainers still need the Dashboard --}}
                     <a href="{{ route('dashboard') }}" class="px-8 py-4 bg-cyan-400 text-black rounded-full font-bold text-lg shadow-lg hover:bg-cyan-300 hover:scale-105 transition transform duration-200">
                         Go to Dashboard
                     </a>
+                    @else
+                    {{-- ✅ FREE USERS: Change "Go to Dashboard" to "Go to Simulator" --}}
+                    <a href="{{ route('quiz.welcome') }}" class="px-8 py-4 bg-cyan-400 text-black rounded-full font-bold text-lg shadow-lg hover:bg-cyan-300 hover:scale-105 transition transform duration-200">
+                        Go to Simulator
+                    </a>
+                    @endif
                 @endauth
 
                 <a href="#demo" class="flex items-center gap-2 text-white font-medium hover:text-cyan-300 transition group">
