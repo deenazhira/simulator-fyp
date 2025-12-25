@@ -24,22 +24,28 @@
             @endif
         </div>
 
-        {{-- Image section with overlay --}}
-        <div class="relative border rounded-xl overflow-hidden shadow">
-            <img src="{{ asset($question['image']) }}" alt="Question Image" class="w-full object-cover">
+        {{-- Image section --}}
+        <div class="relative border rounded-xl overflow-hidden shadow mb-6">
+            {{--
+               ✅ FIX: Show the "result_image" if it exists.
+               If not, fallback to the original "image".
+            --}}
+            <img src="{{ asset($question['result_image'] ?? $question['image']) }}"
+                 alt="Explained Result"
+                 class="w-full object-cover">
 
-            {{-- "Phishing!" overlay text --}}
-            <div class="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-lg text-lg font-bold shadow-lg">
-                {{ $question['correct'] === 'Phishing' ? 'Phishing!' : 'Legitimate' }}
+            {{-- You can keep this simple badge if you want, or remove it if your Canva image already says "Phishing" --}}
+            <div class="absolute top-0 right-0 m-4">
+                @if($question['correct'] == 'Phishing')
+                    <span class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg">
+                        ⚠️ PHISHING
+                    </span>
+                @else
+                    <span class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg">
+                        ✅ LEGITIMATE
+                    </span>
+                @endif
             </div>
-
-            {{-- Red speech bubbles (annotations) --}}
-            @foreach ($annotations as $a)
-                <div class="absolute border-2 border-red-500 bg-red-100/80 text-red-800 text-sm px-2 py-1 rounded-lg"
-                     style="top: {{ $a['y'] }}%; left: {{ $a['x'] }}%; width: {{ $a['w'] }}%; height: {{ $a['h'] }}%;">
-                    💬 {{ $a['label'] }}
-                </div>
-            @endforeach
         </div>
 
         {{-- Explanation box --}}

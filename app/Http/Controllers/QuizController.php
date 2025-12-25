@@ -13,64 +13,86 @@ class QuizController extends Controller
     // ===============================
     private $questions = [
         [
-            'title' => 'Is this email phishing or legitimate?',
-            'image' => 'images/email1.png',
+            'title' => 'You receive an email from "Coca-Cola" claiming you won a free blender. Is this legitimate?',
+            'image' => 'images/quiz/phis-s1.png',
+            'result_image' => 'images/quiz/sol-s1.png',
             'correct' => 'Phishing',
-            'explanation' => 'This is a classic phishing attempt with a suspicious sender and link.'
+            'explanation' => 'Check the sender address closely. The display name says "Coca-Cola",
+                              but the email address is a random string of characters (`@cpmedj.georg.fsdh.com`)
+                              instead of the official `@coca-cola.com`. This is a clear sign of impersonation.',
         ],
         [
-            'title' => 'This social media message link looks suspicious. Phishing or Legit?',
-            'image' => 'images/email2.png',
+            'title' => 'Your CEO calls you on Zoom/Teams, but their video glitches when they turn their head.',
+            'image' => 'images/quiz/phis-s2.png',
+            'result_image' => 'images/quiz/sol-s2.png',
             'correct' => 'Phishing',
-            'explanation' => 'Shortened or disguised links can lead to phishing pages.'
+            'explanation' => 'Deepfake AI video attacks are rising. Unnatural blurring or glitching
+                              around the face/neck is a key sign of a deepfake.'
         ],
         [
-            'title' => 'You received a message claiming you won a prize. Is it phishing?',
-            'image' => 'images/email3.png',
-            'correct' => 'Phishing',
-            'explanation' => 'Unexpected prize emails are common phishing traps.'
+            'title' => 'You receive a reminder email about mandatory cybersecurity training. Is this safe?',
+            'image' => 'images/quiz/legit-s3.png',
+            'result_image' => 'images/quiz/sol-s3.png',
+            'correct' => 'Legitimate',
+            'explanation' => 'This is a standard internal communication. The sender address appears professional,
+                              the request (mandatory training) is a normal business activity, and the
+                              tone is helpful rather than panic alert.'
         ],
         [
-            'title' => 'An email asks for your password to verify your account. Phishing or Legit?',
-            'image' => 'images/email4.png',
-            'correct' => 'Phishing',
-            'explanation' => 'Legitimate services never request passwords via email.'
+            'title' => 'You log in to the company portal and receive a 6-digit code on your phone that you requested.',
+            'image' => 'images/quiz/legit-s4.png',
+            'result_image' => 'images/quiz/sol-s4.png',
+            'correct' => 'Legitimate',
+            'explanation' => 'This is standard Multi-Factor Authentication (MFA).
+                              Since You initiated the login, the code is expected and safe.'
         ],
         [
-            'title' => 'A colleague sends a strange attachment unexpectedly. Safe or Suspicious?',
-            'image' => 'images/email5.png',
+            'title' => 'An ad for "ChatGPT-4 Premium Free" asks you to download a Chrome Extension.',
+            'image' => 'images/quiz/phis-s5.png',
+            'result_image' => 'images/quiz/sol-s5.png',
             'correct' => 'Phishing',
-            'explanation' => 'Unexpected attachments may contain malware.'
+            'explanation' => 'Fake AI tools are a top trend. They often install "stealer malware"
+                              to hijack your browser cookies and passwords.'
         ],
         [
-            'title' => 'A website asks you to login via a link sent in chat. Phishing or Legit?',
-            'image' => 'images/email6.png',
+            'title' => 'You are added to a Telegram group called "Syariah Gold Investment". The admin posts proof of 200% returns in just 3 hours.',
+            'image' => 'images/quiz/phis-s6.png',
+            'result_image' => 'images/quiz/sol-s6.png',
             'correct' => 'Phishing',
-            'explanation' => 'Always type URLs manually; chat links can be fake.'
+            'explanation' => 'Investment on Telegram are totally scam. Any scheme promising huge
+                              returns (200%) in a short time is a scam.'
         ],
         [
-            'title' => 'You receive an urgent email from “IT support” asking for credentials. Safe?',
-            'image' => 'images/email7.png',
+            'title' => 'A "Microsoft Support" window freezes your browser and says "Do not close. Call this number".',
+            'image' => 'images/quiz/phis-s7.png',
+            'result_image' => 'images/quiz/sol-s7.png',
             'correct' => 'Phishing',
-            'explanation' => 'IT departments never ask for login details via email.'
+            'explanation' => 'This is a "Tech Support Scam". No legitimate error message will ever
+                              ask you to call a phone number.'
         ],
         [
-            'title' => 'A notification claims you need to reset your password now. Phishing or Legit?',
-            'image' => 'images/email8.png',
+            'title' => 'An email claiming to be from "HR" asks you to scan a QR code to view your new salary slip.',
+            'image' => 'images/quiz/phis-s8.png',
+            'result_image' => 'images/quiz/sol-s8.png',
             'correct' => 'Phishing',
-            'explanation' => 'Urgent tone creates panic — a classic phishing sign.'
+            'explanation' =>  ' Attackers use QR codes in emails to bypass traditional email
+                                scanners that only look for malicious text links.'
         ],
         [
-            'title' => 'A random email asks to verify payment details. Safe or Suspicious?',
-            'image' => 'images/email9.png',
+            'title' => 'Someone send wedding invitation through WhatsApp. To view, they ask you to download an apk file "Jemputan Majlis Perkahwinan" via WhatsApp.',
+            'image' => 'images/quiz/phis-s9.png',
+            'result_image' => 'images/quiz/sol-s9.png',
             'correct' => 'Phishing',
-            'explanation' => 'Never share payment info through random emails.'
+            'explanation' => 'The "APK Scam" is huge in worldwide. Installing unknown .apk files allows
+                              hackers to steal your SMS TAC numbers and drain your bank account.'
         ],
         [
-            'title' => 'You get a message from an unknown sender with a link. Phishing or Legit?',
-            'image' => 'images/email10.png',
-            'correct' => 'Phishing',
-            'explanation' => 'Unknown senders with links are always suspicious.'
+            'title' =>  'You receive an SMS from "MKN" (Majlis Keselamatan Negara) with a general public service announcement about dengue prevention.',
+            'image' => 'images/quiz/legit-s10.png',
+            'result_image' => 'images/quiz/sol-s10.png',
+            'correct' => 'Legitimate',
+            'explanation' => 'The Malaysian government (MKN) sends legitimate SMS blasts for public awareness.
+                              They typically do not contain clickable links.'
         ],
     ];
 
@@ -137,6 +159,7 @@ class QuizController extends Controller
             $results[$index] = [
                 'title' => $question['title'],
                 'image' => $question['image'],
+                'result_image' => $question['result_image'] ?? null,
                 'correct' => $question['correct'],
                 'explanation' => $question['explanation'],
                 'userAnswer' => $userAnswer,

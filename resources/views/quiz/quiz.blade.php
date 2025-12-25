@@ -5,11 +5,14 @@
 
     <div class="bg-[#4A0080] text-white p-10 text-center shadow-xl rounded-t-3xl">
 
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-wide">Phishing Or Legitimate?</h1>
+        <h1 class="text-4xl md:text-3xl font-extrabold mb-4 tracking-wide text-white opacity-100 uppercase">
+        Phishing Or Legitimate
+    </h1>
 
-        <p class="mb-8 max-w-2xl mx-auto leading-relaxed text-purple-100 text-lg">
-            Test your ability to spot social engineering tricks. Each question shows a realistic scenario — can you tell what’s safe and what’s suspicious?
-        </p>
+    <h2 class="text-xl md:text-2xl font-bold text-white mb-6 leading-relaxed">
+        {{ $question['title'] }}
+    </h2>
+
 
         <div class="flex flex-wrap justify-center gap-3 mb-8">
             @for($i = 1; $i <= $total; $i++)
