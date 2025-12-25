@@ -23,7 +23,7 @@
             <div class="flex flex-wrap items-center gap-6">
                 @guest
                     <a href="{{ url('/register') }}" class="px-8 py-4 bg-cyan-400 text-black rounded-full font-bold text-lg shadow-lg hover:bg-cyan-300 hover:scale-105 transition transform duration-200">
-                        Create Free Account
+                        Create Account
                     </a>
                 @endguest
 
