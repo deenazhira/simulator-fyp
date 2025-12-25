@@ -15,60 +15,70 @@ class QuizController extends Controller
         [
             'title' => 'You receive an email from "Coca-Cola" claiming you won a free blender. Is this legitimate?',
             'image' => 'images/quiz/phis-s1.png',
+            'result_image' => 'images/quiz/sol-s1.png',
             'correct' => 'Phishing',
             'explanation' => 'This is a classic phishing attempt with a suspicious sender and link.'
         ],
         [
             'title' => 'Your CEO calls you on Zoom/Teams, but their video glitches when they turn their head.',
             'image' => 'images/quiz/phis-s2.png',
+            'result_image' => 'images/quiz/sol-s2.png',
             'correct' => 'Phishing',
             'explanation' => 'Shortened or disguised links can lead to phishing pages.'
         ],
         [
             'title' => 'You receive a reminder email about mandatory cybersecurity training. Is this safe?',
             'image' => 'images/quiz/legit-s3.png',
+            'result_image' => 'images/quiz/sol-s3.png',
             'correct' => 'Legitimate',
             'explanation' => 'Unexpected prize emails are common phishing traps.'
         ],
         [
             'title' => 'You log in to the company portal and receive a 6-digit code on your phone that you requested.',
             'image' => 'images/quiz/legit-s4.png',
+            'result_image' => 'images/quiz/sol-s4.png',
             'correct' => 'Legitimate',
             'explanation' => 'Legitimate services never request passwords via email.'
         ],
         [
             'title' => 'An ad for "ChatGPT-4 Premium Free" asks you to download a Chrome Extension.',
             'image' => 'images/quiz/phis-s5.png',
+            'result_image' => 'images/quiz/sol-s5.png',
             'correct' => 'Phishing',
             'explanation' => 'Unexpected attachments may contain malware.'
         ],
         [
             'title' => 'You are added to a Telegram group called "Syariah Gold Investment". The admin posts proof of 200% returns in just 3 hours.',
             'image' => 'images/quiz/phis-s6.png',
+            'result_image' => 'images/quiz/sol-s6.png',
             'correct' => 'Phishing',
             'explanation' => 'Always type URLs manually; chat links can be fake.'
         ],
         [
             'title' => 'A "Microsoft Support" window freezes your browser and says "Do not close. Call this number".',
             'image' => 'images/quiz/phis-s7.png',
+            'result_image' => 'images/quiz/sol-s7.png',
             'correct' => 'Phishing',
             'explanation' => 'IT departments never ask for login details via email.'
         ],
         [
             'title' => 'An email claiming to be from "HR" asks you to scan a QR code to view your new salary slip.',
             'image' => 'images/quiz/phis-s8.png',
+            'result_image' => 'images/quiz/sol-s8.png',
             'correct' => 'Phishing',
             'explanation' => 'Urgent tone creates panic — a classic phishing sign.'
         ],
         [
             'title' => 'Someone send wedding invitation through WhatsApp. To view, they ask you to download an apk file "Jemputan Majlis Perkahwinan" via WhatsApp.',
             'image' => 'images/quiz/phis-s9.png',
+            'result_image' => 'images/quiz/sol-s9.png',
             'correct' => 'Phishing',
             'explanation' => 'Never share payment info through random emails.'
         ],
         [
             'title' =>  'You receive an SMS from "MKN" (Majlis Keselamatan Negara) with a general public service announcement about dengue prevention.',
             'image' => 'images/quiz/legit-s10.png',
+            'result_image' => 'images/quiz/sol-s10.png',
             'correct' => 'Legitimate',
             'explanation' => 'Unknown senders with links are always suspicious.'
         ],
@@ -137,6 +147,7 @@ class QuizController extends Controller
             $results[$index] = [
                 'title' => $question['title'],
                 'image' => $question['image'],
+                'result_image' => $question['result_image'] ?? null,
                 'correct' => $question['correct'],
                 'explanation' => $question['explanation'],
                 'userAnswer' => $userAnswer,
