@@ -14,61 +14,61 @@ class QuizController extends Controller
     private $questions = [
         [
             'title' => 'Is this email phishing or legitimate?',
-            'image' => 'images/email1.png',
+            'image' => 'images/quiz/phis-s1.png',
             'correct' => 'Phishing',
             'explanation' => 'This is a classic phishing attempt with a suspicious sender and link.'
         ],
         [
             'title' => 'This social media message link looks suspicious. Phishing or Legit?',
-            'image' => 'images/email2.png',
+            'image' => 'images/quiz/phis-s2.png',
             'correct' => 'Phishing',
             'explanation' => 'Shortened or disguised links can lead to phishing pages.'
         ],
         [
             'title' => 'You received a message claiming you won a prize. Is it phishing?',
-            'image' => 'images/email3.png',
+            'image' => 'images/quiz/legit-s3.png',
             'correct' => 'Phishing',
             'explanation' => 'Unexpected prize emails are common phishing traps.'
         ],
         [
             'title' => 'An email asks for your password to verify your account. Phishing or Legit?',
-            'image' => 'images/email4.png',
+            'image' => 'images/quiz/legit-s4.png',
             'correct' => 'Phishing',
             'explanation' => 'Legitimate services never request passwords via email.'
         ],
         [
             'title' => 'A colleague sends a strange attachment unexpectedly. Safe or Suspicious?',
-            'image' => 'images/email5.png',
+            'image' => 'images/quiz/phis-s5.png',
             'correct' => 'Phishing',
             'explanation' => 'Unexpected attachments may contain malware.'
         ],
         [
             'title' => 'A website asks you to login via a link sent in chat. Phishing or Legit?',
-            'image' => 'images/email6.png',
+            'image' => 'images/quiz/phis-s6.png',
             'correct' => 'Phishing',
             'explanation' => 'Always type URLs manually; chat links can be fake.'
         ],
         [
             'title' => 'You receive an urgent email from “IT support” asking for credentials. Safe?',
-            'image' => 'images/email7.png',
+            'image' => 'images/quiz/phis-s7.png',
             'correct' => 'Phishing',
             'explanation' => 'IT departments never ask for login details via email.'
         ],
         [
             'title' => 'A notification claims you need to reset your password now. Phishing or Legit?',
-            'image' => 'images/email8.png',
+            'image' => 'images/quiz/phis-s8.png',
             'correct' => 'Phishing',
             'explanation' => 'Urgent tone creates panic — a classic phishing sign.'
         ],
         [
             'title' => 'A random email asks to verify payment details. Safe or Suspicious?',
-            'image' => 'images/email9.png',
+            'image' => 'images/quiz/phis-s9.png',
             'correct' => 'Phishing',
             'explanation' => 'Never share payment info through random emails.'
         ],
         [
             'title' => 'You get a message from an unknown sender with a link. Phishing or Legit?',
-            'image' => 'images/email10.png',
+            'image' => 'images/quiz/legit-s10.png',
             'correct' => 'Phishing',
             'explanation' => 'Unknown senders with links are always suspicious.'
         ],
