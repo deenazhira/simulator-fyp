@@ -4,11 +4,15 @@
 <div class="min-h-screen bg-gray-50 p-8">
     <div class="max-w-7xl mx-auto">
 
+        {{-- Header --}}
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-2xl font-bold text-gray-800">Trainer's Dashboard</h2>
-            <div class="text-gray-500">Welcome, <span class="font-bold text-[#651FFF]">{{ Auth::user()->user_name }}</span></div>
+            <div class="text-gray-500">
+                Welcome, <span class="font-bold text-[#651FFF]">{{ Auth::user()->user_name }}</span>
+            </div>
         </div>
 
+        {{-- Hero --}}
         <div class="bg-gradient-to-r from-[#651FFF] to-[#AF00E4] rounded-2xl p-8 mb-8 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
             <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full transform translate-x-10 -translate-y-10"></div>
 
@@ -36,27 +40,63 @@
             </div>
         </div>
 
+        {{-- Charts --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+
+            {{-- User Activity --}}
             <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-gray-700">User Activity</h3>
-                    <button class="text-sm text-[#651FFF] border border-[#651FFF] px-3 py-1 rounded-lg hover:bg-purple-50">
-                        Download Report
-                    </button>
+                    <div>
+                        <h3 class="font-bold text-gray-800">User Activity</h3>
+                        <p class="text-xs text-gray-400 mt-1">Quiz attempts in the last 14 days</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-purple-50 text-[#651FFF] border border-purple-100">
+                            Attempts
+                        </span>
+                        <button class="text-sm text-[#651FFF] border border-[#651FFF] px-3 py-1 rounded-lg hover:bg-purple-50 transition">
+                            Download Report
+                        </button>
+                    </div>
                 </div>
-                <div class="h-48 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400">
-                    [ Activity Graph Visual Placeholder ]
+
+                <div class="rounded-2xl bg-gradient-to-br from-purple-50 via-white to-cyan-50 border border-gray-100 p-4">
+                    <div class="h-52">
+                        <canvas id="activityChart"></canvas>
+                    </div>
                 </div>
             </div>
 
+            {{-- Risk Distribution --}}
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-700 mb-4">Risk Distribution</h3>
-                <div class="h-48 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400">
-                    [ Pie Chart Placeholder ]
+                <div class="mb-4">
+                    <h3 class="font-bold text-gray-800">Risk Distribution</h3>
+                    <p class="text-xs text-gray-400 mt-1">Based on average quiz score</p>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
+                        Low: {{ $lowRiskCount }}
+                    </span>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-100">
+                        Medium: {{ $mediumRiskCount }}
+                    </span>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-red-50 text-red-700 border border-red-100">
+                        High: {{ $highRiskCount }}
+                    </span>
+                </div>
+
+                <div class="rounded-2xl bg-gradient-to-br from-purple-50 via-white to-cyan-50 border border-gray-100 p-4">
+                    <div class="h-52">
+                        <canvas id="riskChart"></canvas>
+                    </div>
                 </div>
             </div>
+
         </div>
 
+        {{-- Team Performance --}}
         <div id="users-table" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-6 flex justify-between items-center border-b border-gray-100">
                 <h3 class="font-bold text-lg text-gray-800">Team Performance</h3>
@@ -118,4 +158,128 @@
 
     </div>
 </div>
+
+{{-- Chart.js --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Clean + modern defaults
+    Chart.defaults.font.family = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+    Chart.defaults.color = "#6B7280"; // gray-500
+
+    const gridColor = "rgba(100, 116, 139, 0.12)";
+    const borderColor = "#651FFF";                 // dashboard purple
+    const fillColor = "rgba(101, 31, 255, 0.10)";  // soft purple fill
+
+    // ----- User Activity (Line) -----
+    const activityLabels = @json($activityLabels ?? []);
+    const activityCounts = @json($activityCounts ?? []);
+
+    const activityEl = document.getElementById("activityChart");
+    if (activityEl) {
+        new Chart(activityEl, {
+            type: "line",
+            data: {
+                labels: activityLabels,
+                datasets: [{
+                    label: "Attempts",
+                    data: activityCounts,
+                    borderColor: borderColor,
+                    backgroundColor: fillColor,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: "#00E0FF", // cyan accent
+                    pointBorderColor: "#ffffff",
+                    borderWidth: 2,
+                    tension: 0.35,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            boxWidth: 10,
+                            boxHeight: 10,
+                            usePointStyle: true,
+                            pointStyle: "circle"
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: "rgba(17, 24, 39, 0.95)",
+                        padding: 12,
+                        titleColor: "#fff",
+                        bodyColor: "#E5E7EB",
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 7 }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: gridColor },
+                        ticks: { precision: 0 }
+                    }
+                }
+            }
+        });
+    }
+
+// ----- Risk Distribution (Pie) -----
+const low  = {{ (int)$lowRiskCount }};
+const med  = {{ (int)$mediumRiskCount }};
+const high = {{ (int)$highRiskCount }};
+
+const riskEl = document.getElementById("riskChart");
+if (riskEl) {
+    new Chart(riskEl, {
+        type: "pie",
+        data: {
+            labels: ["Low Risk", "Medium", "High Risk"],
+            datasets: [{
+                data: [low, med, high],
+                backgroundColor: [
+                    "#22C55E", // green
+                    "#EAB308", // yellow
+                    "#EF4444", // red
+                ],
+                borderColor: "#FFFFFF",
+                borderWidth: 3,
+                hoverOffset: 8,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        usePointStyle: true,
+                        pointStyle: "circle"
+                    }
+                },
+                tooltip: {
+                    backgroundColor: "rgba(17, 24, 39, 0.95)",
+                    padding: 12,
+                    titleColor: "#fff",
+                    bodyColor: "#E5E7EB",
+                    displayColors: true
+                }
+            }
+        }
+    });
+}
+
+});
+</script>
 @endsection
