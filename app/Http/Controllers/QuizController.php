@@ -11,7 +11,7 @@ class QuizController extends Controller
     // ===============================
     // QUIZ QUESTIONS
     // ===============================
-    private $questions = [
+    private $set1 = [
         [
             'title' => 'You receive an email from "Coca-Cola" claiming you won a free blender. Is this legitimate?',
             'image' => 'images/quiz/phis-s1.png',
@@ -96,13 +96,104 @@ class QuizController extends Controller
         ],
     ];
 
+    private $set2 = [
+        [
+            'title' => 'You receive a text asking you to "CANCEL" a password reset by replying with your verification code. Is this safe?',
+            'image' => 'images/quiz/phis-s11.png',
+            'result_image' => 'images/quiz/sol-s1.png',
+            'correct' => 'Phishing',
+            'explanation' => 'Check the sender address closely. The display name says "Coca-Cola",
+                              but the email address is a random string of characters (`@cpmedj.georg.fsdh.com`)
+                              instead of the official `@coca-cola.com`. This is a clear sign of impersonation.',
+        ],
+        [
+            'title' => 'You see a social media ad offering luxury bags at 80% off. Is this a legitimate deal?',
+            'image' => 'images/quiz/phis-s12.png',
+            'result_image' => 'images/quiz/sol-s2.png',
+            'correct' => 'Phishing',
+            'explanation' => 'Deepfake AI video attacks are rising. Unnatural blurring or glitching
+                              around the face/neck is a key sign of a deepfake.'
+        ],
+        [
+            'title' => 'You receive a reply to an ongoing project thread with an invoice attached. Is this safe?',
+            'image' => 'images/quiz/legit-s13.png',
+            'result_image' => 'images/quiz/sol-s3.png',
+            'correct' => 'Legitimate',
+            'explanation' => 'This is a standard internal communication. The sender address appears professional,
+                              the request (mandatory training) is a normal business activity, and the
+                              tone is helpful rather than panic alert.'
+        ],
+        [
+            'title' => 'It\'s the first of the month. You receive an automated email receipt from Netflix for your standard monthly subscription fee.',
+            'image' => 'images/quiz/legit-s14.png',
+            'result_image' => 'images/quiz/sol-s4.png',
+            'correct' => 'Legitimate',
+            'explanation' => 'This is standard Multi-Factor Authentication (MFA).
+                              Since You initiated the login, the code is expected and safe.'
+        ],
+        [
+            'title' => 'You find a parking ticket on your car with a QR code to "Pay Fine Online".',
+            'image' => 'images/quiz/phis-s15.png',
+            'result_image' => 'images/quiz/sol-s5.png',
+            'correct' => 'Phishing',
+            'explanation' => 'Fake AI tools are a top trend. They often install "stealer malware"
+                              to hijack your browser cookies and passwords.'
+        ],
+        [
+            'title' => 'You receive an email from "PayPaI" (with a capital "i") saying your account is suspended.',
+            'image' => 'images/quiz/phis-s16.png',
+            'result_image' => 'images/quiz/sol-s6.png',
+            'correct' => 'Phishing',
+            'explanation' => 'Investment on Telegram are totally scam. Any scheme promising huge
+                              returns (200%) in a short time is a scam.'
+        ],
+        [
+            'title' =>  'The IT Department sends a company-wide email announcing scheduled maintenance this weekend. No links are attached.',
+            'image' => 'images/quiz/legit-s17.png',
+            'result_image' => 'images/quiz/sol-s7.png',
+            'correct' => 'Legitimate',
+            'explanation' => 'This is a "Tech Support Scam". No legitimate error message will ever
+                              ask you to call a phone number.'
+        ],
+        [
+            'title' => 'You try to transfer funds on Maybank2u. Instead of an SMS TAC, you receive a "Secure2u" push notification on your MAE app asking to "Approve".',
+            'image' => 'images/quiz/legit-s18.png',
+            'result_image' => 'images/quiz/sol-s8.png',
+            'correct' => 'Legitimate',
+            'explanation' =>  ' Attackers use QR codes in emails to bypass traditional email
+                                scanners that only look for malicious text links.'
+        ],
+        [
+            'title' => 'You receive an SMS claiming "Bantuan Tunai Rahmah (STR) approved. Click bit.ly/claim-str-now to credit RM100 to your account."',
+            'image' => 'images/quiz/phis-s19.png',
+            'result_image' => 'images/quiz/sol-s9.png',
+            'correct' => 'Phishing',
+            'explanation' => 'The "APK Scam" is huge in worldwide. Installing unknown .apk files allows
+                              hackers to steal your SMS TAC numbers and drain your bank account.'
+        ],
+        [
+            'title' =>  'You receive a job offer for "Data Entry" that requires you to chat only via Telegram/Signal.',
+            'image' => 'images/quiz/phis-s20.png',
+            'result_image' => 'images/quiz/sol-s10.png',
+            'correct' => 'Phishing',
+            'explanation' => 'The Malaysian government (MKN) sends legitimate SMS blasts for public awareness.
+                              They typically do not contain clickable links.'
+        ],
+    ];
+
     // ===============================
     // QUIZ START PAGE
     // ===============================
     public function welcome()
     {
         // Optional: Clear session on welcome to start fresh
-        session()->forget(['quiz_answers', 'quiz_results']);
+        session()->forget(['quiz_answers', 'quiz_results','current_quiz_set']);
+
+        $selectedSet = (random_int(0, 1) === 0) ? $this->set1 : $this->set2;
+
+        // 3. Store the chosen set in Session
+        session(['current_quiz_set' => $selectedSet]);
+
         return view('quiz/quiz-welcome');
     }
 
@@ -111,14 +202,22 @@ class QuizController extends Controller
     // ===============================
     public function showQuestion(Request $request, $q = 1)
     {
+        // ✅ Retrieve the questions from the session
+        $questions = session('current_quiz_set');
+
+        // Safety check: If session expired, restart
+        if (!$questions) {
+            return redirect()->route('quiz.welcome');
+        }
+
         $q = (int) $q;
 
-        if ($q > count($this->questions)) {
+        if ($q > count($questions)) {
             return redirect()->route('quiz.finish');
         }
 
-        $question = $this->questions[$q - 1];
-        $total = count($this->questions);
+        $question = $questions[$q - 1];
+        $total = count($questions);
 
         return view('quiz/quiz', compact('question', 'total', 'q'));
     }
@@ -144,9 +243,14 @@ class QuizController extends Controller
     // ===============================
     public function finish()
     {
-        $questions = $this->questions;
-        $answers = session('quiz_answers', []);
+        // 1. Get the questions specifically used for this session
+        $questions = session('current_quiz_set');
 
+        if (!$questions) {
+            return redirect()->route('quiz.welcome');
+        }
+
+        $answers = session('quiz_answers', []);
         $score = 0;
         $results = [];
 
@@ -167,17 +271,17 @@ class QuizController extends Controller
             ];
         }
 
-        session(['quiz_results' => $results]); // store results for feedback view
+        // Store results for the feedback view
+        session(['quiz_results' => $results]);
 
         $total = count($questions);
 
-        // ✅ NEW: CALCULATE PERCENTAGE & SAVE TO DATABASE
-        // This ensures the Trainer Dashboard gets the data
+        // 2. Save to Database (For Trainer Dashboard)
         if (Auth::check()) {
             $percentage = ($total > 0) ? round(($score / $total) * 100) : 0;
 
             DB::table('quiz_results')->insert([
-                'user_id' => Auth::user()->user_id, // Matches your custom user_id
+                'user_id' => Auth::user()->user_id,
                 'score' => $percentage,
                 'total_questions' => $total,
                 'created_at' => now(),
@@ -206,19 +310,8 @@ class QuizController extends Controller
 
         $question = $results[$index];
 
-        // Optional: image annotations or highlighted zones
-        $annotationsPerQuestion = [
-            0 => [
-                ['x'=>12, 'y'=>14, 'w'=>40, 'h'=>18, 'label'=>'Suspicious sender'],
-                ['x'=>55, 'y'=>60, 'w'=>30, 'h'=>15, 'label'=>'Fake link'],
-            ],
-            1 => [
-                ['x'=>20, 'y'=>35, 'w'=>50, 'h'=>20, 'label'=>'Hidden URL'],
-            ],
-            // You can add more annotations for other questions here if needed
-        ];
 
-        $annotations = $annotationsPerQuestion[$index] ?? [];
+        $annotations = [];
 
         return view('quiz/quiz-result', [
             'index' => $index,
