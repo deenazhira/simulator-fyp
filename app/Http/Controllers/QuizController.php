@@ -187,9 +187,10 @@ class QuizController extends Controller
     // ===============================
     public function welcome()
     {
-        // Optional: Clear session on welcome to start fresh
-        session()->forget(['quiz_answers', 'quiz_results','current_quiz_set']);
+        // 1. Clear previous sessions INCLUDING the 'saved' flag
+        session()->forget(['quiz_answers', 'quiz_results', 'current_quiz_set', 'quiz_saved']);
 
+        // 2. Randomly pick Set 1 or Set 2
         $selectedSet = (random_int(0, 1) === 0) ? $this->set1 : $this->set2;
 
         // 3. Store the chosen set in Session
@@ -272,13 +273,14 @@ class QuizController extends Controller
             ];
         }
 
-        // Store results for the feedback view
         session(['quiz_results' => $results]);
 
         $total = count($questions);
 
-        // 2. Save to Database (For Trainer Dashboard)
-        if (Auth::check()) {
+        // ==================================================
+        // ✅ FIX: PREVENT DUPLICATE SAVES ON REFRESH
+        // ==================================================
+        if (Auth::check() && !session()->has('quiz_saved')) {
             $percentage = ($total > 0) ? round(($score / $total) * 100) : 0;
 
             DB::table('quiz_results')->insert([
@@ -288,6 +290,9 @@ class QuizController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Mark this session as "Saved" so it doesn't happen again if they refresh
+            session(['quiz_saved' => true]);
         }
 
         return view('quiz/quiz-finish', [
