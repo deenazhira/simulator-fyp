@@ -66,14 +66,14 @@
 
                         {{-- High Score (>= 80) --}}
                         @if($result->score >= 80)
-                            <h3 class="font-bold text-green-600 text-lg mb-2">Excellent Security Awareness!</h3>
+                            <h3 class="font-bold text-green-600 text-lg mb-2">Low Risk Detected. Excellent Security Awareness!</h3>
                             <p class="text-gray-600 text-sm">
                                 You successfully identified most threats. You have a strong understanding of phishing indicators. Keep staying vigilant!
                             </p>
 
                         {{-- Medium Score (50 - 79) --}}
                         @elseif($result->score >= 50)
-                            <h3 class="font-bold text-yellow-600 text-lg mb-2">Good Start, But Be Careful.</h3>
+                            <h3 class="font-bold text-yellow-600 text-lg mb-2">Medium Risk Detected. Good Start, But Be Careful.</h3>
                             <p class="text-gray-600 text-sm">
                                 You spotted some threats but missed others. Attackers only need one mistake. We recommend trying the
                                 <a href="{{ route('quiz.welcome') }}" class="text-[#651FFF] font-bold hover:underline">Simulation</a> again.
