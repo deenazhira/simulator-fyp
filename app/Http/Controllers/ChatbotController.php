@@ -4,315 +4,276 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Auth; // ✅ Added Auth Facade
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class ChatbotController extends Controller
 {
     public function index()
     {
-        // 🔒 SECURITY CHECK:
-        // If the user is a 'public' (free) user, show the Upgrade Page.
         if (Auth::check() && Auth::user()->user_role === 'public') {
-            // Make sure you created resources/views/chatbot/upgrade.blade.php
             return view('chatbot.upgrade');
         }
-
-        // ✅ FIXED PATH:
-        // Since you moved the file to resources/views/chatbot/chatbot.blade.php,
-        // we use 'chatbot.chatbot' to find it.
         return view('chatbot.chatbot');
     }
 
-    /**
-     * The order of "items" the simulated attacker tries to collect.
-     * We'll enforce strict format ONLY for email + staff_id (last 4 digits),
-     * but we will NOT "invalid format" users who refuse ("no", "don't want", etc.).
-     */
-    private function stepOrder(): array
+    // 🌟 1. CONTEXT-AWARE PATTERN RECOGNITION 🌟
+    private function analyzeUserMessage(string $msg, array $steps): array
     {
-        return ['email', 'staff_id', 'phone', 'username', 'password'];
-    }
+        $findings = [];
+        $msg = trim($msg);
 
-    private function nextTarget(array $steps): ?string
-    {
-        foreach ($this->stepOrder() as $k) {
-            if (empty($steps[$k])) return $k;
+        // --- A. CHATTER & QUESTION DETECTION (PRIORITY #1) ---
+        // We check this FIRST so "hi", "who", "no" are never mistaken for Usernames or Passwords.
+        $ignoreList = '/^(hello|hi|hey|ok|okay|sure|yes|no|nope|why|who|what|how|where|find|yo|omg|wow|lol|wtf|wait|help|please|pls|thanks|thx|cool|damn|god|really|real|serious|stop|bye|valid|invalid|email|wrong|change|not|mistake|fake|lie)/i';
+        $isChatter = preg_match($ignoreList, $msg);
+
+        if ($isChatter) {
+            // Return immediately so we don't accidentally process "hi" as a username
+            return ['chatter' => 'valid'];
         }
-        return null;
-    }
 
-    private function promptFor(string $target): string
-    {
-        return match ($target) {
-            'email'    => "To proceed, please share your email address.",
-            'staff_id' => "Could you please share the last 4 digits of your staff ID?",
-            'phone'    => "Please provide your phone number so we can confirm your identity.",
-            'username' => "What is your username for the account?",
-            'password' => "Finally, please confirm your password so we can complete verification.",
-            default    => "Please confirm your details.",
-        };
-    }
+        // --- B. DATA PATTERNS (High Confidence) ---
 
-    private function isRefusal(string $msg): bool
-    {
-        $m = strtolower(trim($msg));
+        // 1. STRONG PASSWORD
+        if (preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $msg)) {
+            $findings['password'] = 'valid';
+        }
 
-        // common refusals (EN + a bit of MY slang)
-        return preg_match(
-            '/^(no|nope|nah|dont|don\'t|do not|cannot|can\'t|refuse|rather not|not comfortable|i won\'t|i will not|tak nak|x nak|tidak|tak)$/i',
-            $m
-        ) === 1;
-    }
+        // 2. EMAIL (Strict Ending Check)
+        elseif (preg_match('/^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$/', $msg)) {
+            $findings['email'] = 'valid';
+        }
+        elseif (filter_var($msg, FILTER_VALIDATE_EMAIL)) {
+            $findings['email'] = 'valid';
+        }
 
-    private function looksLikeEmailAttempt(string $msg): bool
-    {
-        // user typed something that resembles trying to provide an email
-        // (contains '@' or '.' is good enough to decide "attempt")
-        return str_contains($msg, '@') || str_contains($msg, '.');
-    }
+        // 3. PHONE NUMBERS (9+ digits)
+        elseif (strlen(preg_replace('/[^0-9]/', '', $msg)) >= 9) {
+            $findings['phone'] = 'valid';
+        }
 
-    private function looksLike4DigitAttempt(string $msg): bool
-    {
-        // if user typed any digit, they are likely attempting last4
-        return preg_match('/\d/', $msg) === 1;
-    }
+        // --- C. CONTEXTUAL DATA CHECKS (Lower Confidence) ---
 
-    private function validateForTarget(string $target, string $msg, ?string &$error): bool
-    {
-        $error = null;
+        $isSimpleString = (strlen($msg) >= 2 && !str_contains($msg, ' '));
 
-        if ($target === 'email') {
-            if (!filter_var($msg, FILTER_VALIDATE_EMAIL)) {
-                $error = "Invalid email format. Example: name@email.com";
-                return false;
+        // CHECK 1: USERNAME (If needed)
+        // Only if we haven't found anything else AND it's a simple string.
+        if (!$steps['username'] && $isSimpleString && empty($findings)) {
+            $findings['username'] = 'valid';
+        }
+
+        // CHECK 2: SHORT CODES (Ticket #, OTP, ID)
+        // Expanded to 4-12 chars. Only check if we ALREADY have the username.
+        if ($steps['username'] && !$steps['short_number'] && empty($findings)) {
+            if (preg_match('/^[A-Za-z0-9]{4,12}$/', $msg)) {
+                $findings['short_number'] = 'valid';
             }
         }
 
-        if ($target === 'staff_id') {
-            // EXACTLY 4 digits only (no extra text)
-            if (!preg_match('/^\d{4}$/', $msg)) {
-                $error = "Please enter exactly 4 digits only. Example: 1234";
-                return false;
+        // CHECK 3: WEAK PASSWORD
+        // Only if we have everything else and it looks like a password attempt
+        if ($steps['username'] && $steps['email'] && $steps['short_number'] && $steps['phone'] && empty($findings)) {
+            if ($isSimpleString) {
+                $findings['password_weak'] = $this->analyzePasswordWeakness($msg);
             }
         }
 
-        // For other targets we aren't enforcing strict formats yet
-        return true;
+        // --- D. UNKNOWN FALLBACK ---
+        // If it wasn't chatter, and didn't match any data patterns, treat it as chatter/confusion.
+        if (empty($findings)) {
+            $findings['chatter'] = 'valid';
+        }
+
+        return $findings;
     }
 
-    private function valueMatchesTarget(string $target, string $msg): bool
+    private function analyzePasswordWeakness(string $msg): string
     {
-        return match ($target) {
-            'email'    => filter_var($msg, FILTER_VALIDATE_EMAIL) !== false,
-            'staff_id' => preg_match('/^\d{4}$/', $msg) === 1,
-            default    => true,
-        };
+        $issues = [];
+        if (strlen($msg) < 8) $issues[] = "too short (needs 8+ chars)";
+        if (!preg_match('/[A-Z]/', $msg)) $issues[] = "missing uppercase";
+        if (!preg_match('/[0-9]/', $msg)) $issues[] = "missing number";
+        if (!preg_match('/[@$!%*?&]/', $msg)) $issues[] = "missing symbol";
+
+        return empty($issues) ? "format invalid" : implode(", ", $issues);
     }
 
-    private function systemPrompt(string $currentTarget): string
+    // 🌟 2. BASE SYSTEM PROMPT 🌟
+    private function baseSystemPrompt(string $persona): string
     {
         return
-            "You are a simulated phishing attacker for authorized cybersecurity training. " .
-            "Act like a real human trying to verify user identity. " .
-            "You may ask for placeholders (username, last 4 digits of ID, email, password, phone) in a natural conversation. " .
-            "If the user refuses or says 'no', respond conversationally, persuasive but friendly. " .
-            "Never provide instructions for real cybercrime. " .
-            "Only give the educational lesson AFTER all 5 items are 'collected'. " .
-            "IMPORTANT: Right now you MUST try to obtain: {$currentTarget}. Ask for it naturally and persuasively.";
+            "You are a SOCIAL ENGINEERING SIMULATOR AI.\n" .
+            "CURRENT PERSONA: {$persona}\n" .
+            "MISSION: Extract personal details (Username, Email, ID/Code, Phone, Password) via CHAT.\n" .
+            "STYLE GUIDE: Keep messages SHORT (under 25 words). Speak naturally. Do NOT be robotic.\n" .
+            "CRITICAL RULE: Do NOT invent specific values. If asking for a code, ask for 'the code sent to you'.\n" .
+            "Do NOT break character. You are NOT an AI assistant.";
+    }
+
+    // 🌟 3. DYNAMIC DIRECTOR'S NOTE 🌟
+    private function getDirectorsNote(array $steps, array $analysis, string $lastUserMsg, string $persona, string $codeName): string
+    {
+        $collected = [];
+        $missing = [];
+
+        foreach ($steps as $key => $captured) {
+            $readableKey = ($key === 'short_number') ? $codeName : strtoupper($key);
+            if ($captured) $collected[] = $readableKey;
+            else $missing[] = $readableKey;
+        }
+
+        $nextTarget = $missing[0] ?? 'NONE';
+        $haveString = empty($collected) ? "Nothing yet" : implode(", ", $collected);
+
+        // STATE ANCHORING
+        $instruction = "USER SAID: '{$lastUserMsg}'.\n" .
+                       "INFO YOU ALREADY HAVE: [{$haveString}]. DO NOT ASK FOR THESE AGAIN.\n" .
+                       "CURRENT GOAL: [{$nextTarget}].\n";
+
+        // 1. SUCCESS
+        $justCaptured = array_intersect_key($analysis, array_filter($steps));
+        if (!empty($justCaptured)) {
+            $instruction .= "STATUS: SUCCESS! User just provided valid info.\n" .
+                            "ACTION: Briefly acknowledge. IMMEDIATELY ask for '{$nextTarget}'.";
+
+        }
+        // 2. WEAK PASSWORD (Explicit Failure)
+        elseif (isset($analysis['password_weak'])) {
+            $errors = $analysis['password_weak'];
+            $instruction .= "STATUS: FAIL. User provided a WEAK password. Validation Errors: [{$errors}].\n" .
+                            "ACTION: Do NOT say 'Thanks'. Tell the user EXACTLY why it failed. Ask them to try again.";
+        }
+        // 3. CHATTER / QUESTIONS / INVALID DATA
+        else {
+            $instruction .= "STATUS: User is chatting, asking a question, or gave unclear input.\n" .
+                            "ACTION: 1. Answer their question/comment naturally (in character). " .
+                            "2. Then IMMEDIATELY pivot back and demand '{$nextTarget}' again.";
+        }
+
+        return $instruction;
     }
 
     public function send(Request $request)
     {
-        // 🔒 SECURITY CHECK for API:
-        // Prevent 'public' users from bypassing the upgrade page using tools/scripts
         if (Auth::check() && Auth::user()->user_role === 'public') {
-            return response()->json([
-                "reply" => "Access Denied. Please upgrade to Enterprise to use this feature."
-            ], 403);
+            return response()->json(["reply" => "Access Denied."], 403);
         }
 
         $userMessage = trim((string) $request->input('message', ''));
-
         $history = session('chat_history', []);
+
         $steps = session('phish_steps', [
-            'username' => false,
-            'staff_id' => false,
-            'email'    => false,
-            'password' => false,
-            'phone'    => false,
+            'username' => false, 'email' => false, 'short_number' => false, 'phone' => false, 'password' => false,
         ]);
 
-        // Initialize scenario
+        $persona = session('phish_persona', 'Unknown Attacker');
+        $codeName = session('phish_code_name', 'Verification Code');
+
+        // --- 🌟 INITIALIZATION (SCENARIO ROULETTE) 🌟 ---
         if (!session()->has('scenario') || $userMessage === "__init__") {
-            $scenarios = [
-                ["name"=>"IT Helpdesk", "intro"=>"Hi, this is IT Helpdesk. We detected unusual login activity. Can you verify your account?"],
-                ["name"=>"HR Payroll", "intro"=>"Hello, HR Payroll here. Your payroll verification is pending."],
-                ["name"=>"Bank Fraud", "intro"=>"Bank Fraud Department detected suspicious activity. Need to confirm your identity."],
-                ["name"=>"Courier", "intro"=>"Your parcel is held. Please confirm your details."],
-                ["name"=>"System Upgrade", "intro"=>"We are upgrading our authentication server tonight. Need to confirm your account details before migration."]
+            $apiKey = env('OPENAI_API_KEY');
+
+            $flavors = [
+                // Corporate & IT
+                "Corporate IT: Mandatory VPN security update. Remote access is suspended until the user re-verifies their full profile.",
+                "HR Department: 'Annual Salary Review' documents are ready, but the user's personnel file has missing data fields.",
+                "Email Administrator: User's mailbox has exceeded the storage quota (99% full). Needs verification to migrate to the new cloud server.",
+
+                // Government & Legal
+                "Tax Office: A tax refund is pending, but the user's profile is flagged as 'Incomplete'. Needs full verification to release funds.",
+                "Court Summons System: You have been selected for Jury Duty. Please verify your identity to view the summons or request an exemption.",
+                "Visa & Immigration: There is an error in your travel document/passport renewal application. Immediate verification needed to prevent rejection.",
+
+                // Financial & Services
+                "Bank Fraud Team: A suspicious international transaction ($1,200) was detected. We need full identity confirmation to block it.",
+                "Insurance Provider: Your claim (auto/health) has been approved, but we need to verify your direct deposit profile details.",
+                "Crypto Exchange Support: Unauthorized login attempt from a new device. Account is frozen. Needs 'Level 3 KYC' verification to unlock.",
+
+                // Education & Personal
+                "University Admin: Student/Staff portal access is expiring due to a system migration. Re-registration is required immediately.",
+                "Cloud Storage Support: Your iCloud/Google Drive payment failed. Your data will be deleted in 24 hours unless you verify ownership.",
+                "Lottery Commission: You have won a 'Second Chance' prize in a local draw. We need to verify your identity to process the check."
             ];
 
-            $scenario = $scenarios[array_rand($scenarios)];
+            $selectedFlavor = $flavors[array_rand($flavors)];
+
+            $initPrompt =
+                "Invent a specific Phishing Scenario based on: '{$selectedFlavor}'\n" .
+                "STRICT OUTPUT FORMAT (3 lines):\n" .
+                "PERSONA: [The Role]\n" .
+                "CODE_NAME: [The Label of the code, e.g. 'OTP', 'Case #', 'Tax ID', 'Ticket #'. Do NOT invent a value.]\n" .
+                "MESSAGE: [Opening chat message. Short, direct, urgent. Ask for Username.]";
+
+            $response = Http::withToken($apiKey)->post('https://api.openai.com/v1/chat/completions', [
+                "model" => "gpt-4o-mini",
+                "messages" => [["role" => "system", "content" => $initPrompt]],
+                "max_tokens" => 200, "temperature" => 1.0
+            ]);
+
+            $raw = $response->json()['choices'][0]['message']['content'] ?? "";
+
+            $generatedPersona = 'Security Bot';
+            $generatedCodeName = 'Verification Code';
+            $firstBotMsg = 'Hi, please verify your username.';
+
+            if (preg_match('/PERSONA:\s*(.*?)\n/i', $raw, $m1)) $generatedPersona = trim($m1[1]);
+            if (preg_match('/CODE_NAME:\s*(.*?)\n/i', $raw, $m2)) $generatedCodeName = trim($m2[1]);
+            if (preg_match('/MESSAGE:\s*(.*)/s', $raw, $m3)) $firstBotMsg = trim($m3[1], " \t\n\r\0\x0B\"'*");
+
             session([
-                'scenario' => $scenario,
-                'chat_history' => [],
-                'phish_steps' => $steps,
+                'scenario' => true,
+                'chat_history' => [["role"=>"assistant", "content"=>$firstBotMsg]],
+                'phish_steps' => [
+                    'username' => false, 'email' => false, 'short_number' => false, 'phone' => false, 'password' => false
+                ],
+                'phish_persona' => $generatedPersona,
+                'phish_code_name' => $generatedCodeName
             ]);
 
-            // start with first target
-            $target = $this->nextTarget($steps) ?? 'email';
-            session(['phish_target' => $target]);
-
-            $firstBotMsg = $scenario['intro'] . " " . $this->promptFor($target);
-
-            $history[] = ["role"=>"assistant", "content"=>$firstBotMsg];
-            session(['chat_history'=>$history]);
-
-            return response()->json([
-                "reply" => $firstBotMsg,
-                "valid" => true,
-                "target" => $target,
-            ]);
+            return response()->json(["reply" => $firstBotMsg, "valid" => true, "target" => "username"]);
         }
 
-        // Current expected target
-        $target = session('phish_target', $this->nextTarget($steps) ?? 'email');
+        // --- PROCESSING ---
+        $analysis = $this->analyzeUserMessage($userMessage, $steps);
 
-        // Save user message
+        foreach ($analysis as $key => $status) {
+            if ($status === 'valid' && isset($steps[$key])) $steps[$key] = true;
+        }
+        session(['phish_steps' => $steps]);
+
         $history[] = ["role"=>"user", "content"=>$userMessage];
 
-        /**
-         * ✅ NEW BEHAVIOR:
-         * 1) If user refuses ("no") -> persuasion + re-ask, NOT "invalid format"
-         * 2) Only validate formats if user is attempting to provide the value
-         * 3) Only mark step complete if message truly matches the target format
-         */
-
-        // 1) Refusal first
-        if ($this->isRefusal($userMessage)) {
-            $botReply =
-                "I understand. Just to keep your account safe, we only need a quick confirmation. " .
-                "You can share the minimum needed and we’ll proceed. " .
-                $this->promptFor($target);
-
-            $history[] = ["role"=>"assistant", "content"=>$botReply];
-            session(['chat_history'=>$history]);
-
-            return response()->json([
-                "reply" => $botReply,
-                "valid" => true,
-                "target" => $target,
-            ]);
-        }
-
-        // 2) Decide if we should validate (only if they look like they are trying)
-        $shouldValidate = false;
-        if ($target === 'email' && $this->looksLikeEmailAttempt($userMessage)) {
-            $shouldValidate = true;
-        }
-        if ($target === 'staff_id' && $this->looksLike4DigitAttempt($userMessage)) {
-            $shouldValidate = true;
-        }
-
-        if ($shouldValidate) {
-            $error = null;
-            if (!$this->validateForTarget($target, $userMessage, $error)) {
-                $botReply = $error . "\n\n" . $this->promptFor($target);
-
-                $history[] = ["role"=>"assistant", "content"=>$botReply];
-                session(['chat_history'=>$history]);
-
-                return response()->json([
-                    "reply" => $botReply,
-                    "valid" => false,
-                    "target" => $target,
-                ]);
-            }
-        }
-
-        // 3) Mark complete ONLY if message actually matches the target requirement
-        $didCompleteThisStep = false;
-        if ($target === 'email' || $target === 'staff_id') {
-            $didCompleteThisStep = $this->valueMatchesTarget($target, $userMessage);
-        } else {
-            // For other steps, accept any message as completion (you can tighten later)
-            $didCompleteThisStep = true;
-        }
-
-        if ($didCompleteThisStep) {
-            $steps[$target] = true;
-            session(['phish_steps' => $steps]);
-        }
-
-        // Completed all?
-        if ($this->attackCompleted($steps)) {
-            $lesson = "⚠️ This was a phishing simulation.\n\n" .
-                      "You shared sensitive details: Username, Staff ID, Email, Password, Phone.\n" .
-                      "**Lesson:** Never share personal information with unexpected messages, calls, or chats. Always verify sender legitimacy.";
-
+        // CHECK VICTORY
+        if (!in_array(false, $steps)) {
+            $lesson = "⚠️ **Phishing Simulation Complete**\n\nYou shared all your details.\n\n**Lesson:** legitimate organizations will NEVER ask for your password or full profile via chat.";
             $history[] = ["role"=>"assistant", "content"=>$lesson];
             session(['chat_history'=>$history]);
-
-            session()->forget('scenario');
-            session()->forget('phish_steps');
-            session()->forget('phish_target');
-
-            return response()->json([
-                "reply" => $lesson,
-                "valid" => true,
-                "target" => null,
-            ]);
+            session()->forget(['scenario', 'phish_steps', 'phish_persona', 'phish_code_name']);
+            return response()->json(["reply" => $lesson, "valid" => true, "target" => null]);
         }
 
-        // If step completed, advance. If not, keep same target.
-        $nextTarget = $didCompleteThisStep ? ($this->nextTarget($steps) ?? $target) : $target;
-        session(['phish_target' => $nextTarget]);
-
-        // Call OpenAI for natural response
+        // --- AI CALL ---
         $apiKey = env('OPENAI_API_KEY');
-        if (!$apiKey) {
-            return response()->json(["reply" => "ERROR: Missing OPENAI_API_KEY"], 500);
-        }
+        $messages = [["role"=>"system", "content"=>$this->baseSystemPrompt($persona)]];
+        foreach ($history as $h) $messages[] = ["role" => $h['role'], "content" => $h['content']];
 
-        $messages = [
-            ["role"=>"system", "content"=>$this->systemPrompt($nextTarget)]
-        ];
+        $directorsNote = $this->getDirectorsNote($steps, $analysis, $userMessage, $persona, $codeName);
+        $messages[] = ["role" => "system", "content" => $directorsNote];
 
-        foreach ($history as $h) {
-            $messages[] = ["role" => $h['role'], "content" => $h['content']];
-        }
+        $response = Http::withToken($apiKey)->post('https://api.openai.com/v1/chat/completions', [
+            "model" => "gpt-4o-mini",
+            "messages" => $messages,
+            "max_tokens" => 300,
+            "temperature" => 0.85
+        ]);
 
-        // Force it to focus on current target
-        $messages[] = ["role" => "system", "content" => "Keep the conversation natural, but guide toward obtaining {$nextTarget}."];
-
-        $response = Http::withToken($apiKey)
-            ->post('https://api.openai.com/v1/chat/completions', [
-                "model" => "gpt-4o-mini",
-                "messages" => $messages,
-                "max_tokens" => 400,
-                "temperature" => 0.8
-            ]);
-
-        if (!$response->successful()) {
-            return response()->json(["reply" => "API Error: " . $response->body()], 500);
-        }
-
-        $botReply = $response->json()['choices'][0]['message']['content'] ?? "Sorry, I didn't get a response.";
+        $botReply = $response->json()['choices'][0]['message']['content'] ?? "Connection error.";
+        $botReply = trim($botReply, " \t\n\r\0\x0B\"'*");
 
         $history[] = ["role"=>"assistant", "content"=>$botReply];
         session(['chat_history'=>$history]);
 
-        return response()->json([
-            "reply" => $botReply,
-            "valid" => true,
-            "target" => $nextTarget,
-        ]);
-    }
-
-    private function attackCompleted(array $steps): bool
-    {
-        foreach ($steps as $done) if (!$done) return false;
-        return true;
+        return response()->json(["reply" => $botReply, "valid" => true, "target" => "dynamic"]);
     }
 }
-
