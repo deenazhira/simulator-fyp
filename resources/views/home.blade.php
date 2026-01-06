@@ -65,9 +65,9 @@
         </div>
         <div class="md:w-1/2">
             <h3 class="text-sm font-bold tracking-widest text-purple-600 mb-2 uppercase">Who We Are</h3>
-            <h2 class="text-4xl font-extrabold text-[#4A0080] mb-6">Empowering Your Digital Safety</h2>
+            <h2 class="text-4xl font-extrabold text-[#4A0080] mb-6">Building Your Human Firewall</h2>
             <p class="text-gray-600 text-lg leading-relaxed mb-6">
-                <strong>PhishDefend AI</strong> isn't just a quiz; it's an intelligent defense platform. We combine machine learning with interactive education to help you identify malicious links before you click.
+                <strong>PhishDefend AI</strong> combines interactive gaming with advanced algorithms to sharpen your cybersecurity instincts. We don't just test your knowledge, we train your reflexes against the latest social engineering tactics.
             </p>
             <ul class="space-y-3 mb-8">
                 <li class="flex items-center text-gray-700">
