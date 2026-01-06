@@ -91,7 +91,13 @@
 
         <div class="rounded-xl overflow-hidden shadow-[0_10px_30px_rgba(8,_112,_184,_0.5)] border border-purple-500/30">
             <div class="aspect-w-16 aspect-h-9 bg-black">
-                <iframe class="w-full h-[400px]" src="https://www.youtube.com/embed/your-video-id" title="PhishDefend AI Demo" frameborder="0" allowfullscreen></iframe>
+                <iframe class="w-full h-[400px]"
+                        src="https://www.youtube.com/embed/U7XN-TFT0wY"
+                        title="PhishDefend AI Demo"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
             </div>
         </div>
     </div>
